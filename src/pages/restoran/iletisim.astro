@@ -1,0 +1,189 @@
+---
+import RestaurantLayout from '../../layouts/RestaurantLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/restoran/photos';
+import { business } from '../../sites/restoran/business';
+
+const mapUrl = 'https://www.openstreetmap.org/search?query=Moda%2C%20Kad%C4%B1k%C3%B6y%2C%20%C4%B0stanbul';
+---
+
+<RestaurantLayout
+  title="İletişim ve ulaşım | Közde Ocakbaşı"
+  description="Közde Ocakbaşı adresi, çalışma saatleri ve Kadıköy iskelesinden ulaşım bilgisi."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>İletişim ve ulaşım</h1>
+      <p>Moda'nın ara sokaklarında, Kadıköy iskelesine yürüme mesafesindeyiz.</p>
+    </header>
+
+    <div class="contact">
+      <section class="card" aria-labelledby="adres-title">
+        <h2 id="adres-title">Adres ve iletişim</h2>
+        <dl class="details">
+          <div>
+            <dt>Adres</dt>
+            <dd>{business.address} <span class="sample">örnek</span></dd>
+          </div>
+          <div>
+            <dt>Telefon</dt>
+            <dd>{business.phone} <span class="sample">örnek</span></dd>
+          </div>
+          <div>
+            <dt>E-posta</dt>
+            <dd>{business.email} <span class="sample">örnek</span></dd>
+          </div>
+        </dl>
+        <p class="sample-note">
+          Örnek iletişim bilgileri kimseye ulaşmaz. Rezervasyon için
+          <a href={href('restoran/rezervasyon')}>rezervasyon formunu</a> kullanın.
+        </p>
+      </section>
+
+      <section class="card" aria-labelledby="saat-title">
+        <h2 id="saat-title">Çalışma saatleri</h2>
+        <table class="hours">
+          <caption class="visually-hidden">Haftanın günlerine göre açılış ve kapanış saatleri</caption>
+          <tbody>
+            {
+              business.hours.map((h) => (
+                <tr>
+                  <th scope="row">{h.days}</th>
+                  <td>{h.time}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+        <p class="sample-note">{business.kitchenNote}</p>
+      </section>
+
+      <section class="card card--wide" aria-labelledby="ulasim-title">
+        <div class="transport">
+          <div>
+            <h2 id="ulasim-title">Nasıl gelinir?</h2>
+            <ul>
+              <li><strong>Vapurla:</strong> Kadıköy iskelesinden Moda yönüne yürüyerek yaklaşık 15 dakika.</li>
+              <li><strong>Tramvayla:</strong> Kadıköy–Moda nostaljik tramvayı (T3) Moda'dan geçer.</li>
+              <li><strong>Arabayla:</strong> Moda'da sokak parkı sınırlıdır; Kadıköy'deki otoparkları tercih edin.</li>
+            </ul>
+            <a class="button button--outline" href={mapUrl} rel="noopener" target="_blank">
+              Moda'yı haritada aç<span class="visually-hidden"> (yeni sekmede açılır)</span>
+            </a>
+          </div>
+          <figure>
+            <UnsplashImage photo={photos.caydanlik} aspect={4 / 3} sizes="(min-width: 56rem) 40vw, 100vw" widths={[480, 800, 1200]} />
+          </figure>
+        </div>
+      </section>
+    </div>
+  </div>
+</RestaurantLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-l);
+    padding-bottom: var(--space-2xl);
+  }
+
+  @media (min-width: 52rem) {
+    .contact {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .card--wide {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .card {
+    padding: var(--space-l) clamp(1rem, 3vw, 2rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--cobalt);
+    border-radius: var(--radius);
+  }
+
+  .card h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-m);
+  }
+
+  .details {
+    display: grid;
+    gap: var(--space-s);
+    margin: 0;
+  }
+
+  .details dt {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--turquoise-text);
+  }
+
+  .details dd {
+    margin: 0;
+    font-size: var(--step-1);
+    overflow-wrap: anywhere;
+  }
+
+  .sample-note {
+    margin-top: var(--space-m);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .hours {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .hours th,
+  .hours td {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+
+  .hours th {
+    font-weight: 600;
+  }
+
+  .hours td {
+    text-align: right;
+    font-weight: 700;
+    color: var(--cobalt);
+    white-space: nowrap;
+  }
+
+  .transport {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  @media (min-width: 56rem) {
+    .transport {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+
+  .transport ul {
+    margin: 0 0 var(--space-l);
+    padding-left: 1.2rem;
+    display: grid;
+    gap: var(--space-xs);
+    max-width: var(--measure);
+  }
+
+  .transport figure {
+    margin: 0;
+  }
+
+  .transport :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+</style>

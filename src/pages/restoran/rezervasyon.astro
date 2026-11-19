@@ -1,0 +1,485 @@
+---
+import RestaurantLayout from '../../layouts/RestaurantLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/restoran/photos';
+import { business } from '../../sites/restoran/business';
+
+// Reservations every half hour from opening until 22.30.
+const times = Array.from({ length: 22 }, (_, i) => {
+  const minutes = 12 * 60 + i * 30;
+  return `${String(Math.floor(minutes / 60)).padStart(2, '0')}.${minutes % 60 === 0 ? '00' : '30'}`;
+});
+const partySizes = Array.from({ length: 12 }, (_, i) => i + 1);
+const areas = [
+  { value: 'ocakbasi', label: 'Ocakbaşı (mangalın çevresi)' },
+  { value: 'salon', label: 'Salon' },
+  { value: 'teras', label: 'Teras' },
+];
+---
+
+<RestaurantLayout
+  title="Rezervasyon | Közde Ocakbaşı"
+  description="Közde Ocakbaşı için masa ayırtın: tarih, saat, kişi sayısı ve masa tercihinizi seçin."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Rezervasyon</h1>
+      <p>Tarih, saat ve kişi sayısını seçin. Mangal çevresindeki masalar sınırlı olduğu için masa tercihinizi de belirtin.</p>
+    </header>
+
+    <div class="booking">
+      <section class="booking-form" aria-labelledby="form-title">
+        <h2 id="form-title" class="visually-hidden">Rezervasyon formu</h2>
+        <p class="demo-note" role="note">
+          Bu bir tasarım örneğidir: form bilgileri kontrol eder ama rezervasyon oluşturmaz ve hiçbir yere göndermez.
+        </p>
+
+        <form id="reservation-form" action="#" method="post">
+          <div class="error-summary" data-error-summary tabindex="-1" hidden>
+            <h3>Formda düzeltilmesi gereken alanlar var</h3>
+            <ul></ul>
+          </div>
+
+          <fieldset class="group">
+            <legend>Ne zaman?</legend>
+            <div class="row row--3">
+              <div class="field">
+                <label for="tarih">Tarih</label>
+                <input id="tarih" name="tarih" type="date" required data-min-days="0" data-max-days="60" />
+                <p class="field-error" id="tarih-hata" hidden></p>
+              </div>
+              <div class="field">
+                <label for="saat">Saat</label>
+                <select id="saat" name="saat" required>
+                  <option value="">Seçin</option>
+                  {times.map((t) => <option value={t}>{t}</option>)}
+                </select>
+                <p class="field-error" id="saat-hata" hidden></p>
+              </div>
+              <div class="field">
+                <label for="kisi" data-name="Kişi sayısı">Kişi sayısı</label>
+                <select id="kisi" name="kisi" required aria-describedby="kisi-ipucu">
+                  <option value="">Seçin</option>
+                  {partySizes.map((n) => <option value={n}>{n} kişi</option>)}
+                </select>
+                <p class="field-hint" id="kisi-ipucu">12 kişiden kalabalık gruplar notta belirtsin.</p>
+                <p class="field-error" id="kisi-hata" hidden></p>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset class="group choice" data-name="Masa tercihi">
+            <legend>Masa tercihi</legend>
+            <div class="choices">
+              {
+                areas.map((a) => (
+                  <div class="choice-item">
+                    <input type="radio" id={`alan-${a.value}`} name="alan" value={a.value} required />
+                    <label for={`alan-${a.value}`}>{a.label}</label>
+                  </div>
+                ))
+              }
+            </div>
+            <p class="field-error" id="alan-hata" hidden></p>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>İletişim bilgileriniz</legend>
+            <div class="row row--2">
+              <div class="field">
+                <label for="ad" data-name="Ad soyad">Adınız ve soyadınız</label>
+                <input id="ad" name="ad" type="text" autocomplete="name" required maxlength="80" />
+                <p class="field-error" id="ad-hata" hidden></p>
+              </div>
+              <div class="field">
+                <label for="telefon" data-name="Telefon">Cep telefonunuz</label>
+                <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required placeholder="05XX XXX XX XX" maxlength="20" />
+                <p class="field-error" id="telefon-hata" hidden></p>
+              </div>
+            </div>
+            <div class="field">
+              <label for="eposta" data-name="E-posta">E-posta (isteğe bağlı)</label>
+              <input id="eposta" name="eposta" type="email" autocomplete="email" inputmode="email" maxlength="120" />
+              <p class="field-error" id="eposta-hata" hidden></p>
+            </div>
+            <div class="field">
+              <label for="not" data-name="Not">Notunuz (isteğe bağlı)</label>
+              <textarea id="not" name="not" rows="3" maxlength="500" aria-describedby="not-ipucu"></textarea>
+              <p class="field-hint" id="not-ipucu">Doğum günü, bebek sandalyesi, alerjiler gibi.</p>
+              <p class="field-error" id="not-hata" hidden></p>
+            </div>
+          </fieldset>
+
+          <div class="field field--check">
+            <input id="onay" name="onay" type="checkbox" required />
+            <label for="onay" data-name="Kişisel veri onayı">
+              Rezervasyonum için adımın ve telefon numaramın kullanılmasını kabul ediyorum.
+              <a href={href('restoran/kvkk')}>Aydınlatma metni</a>
+            </label>
+            <p class="field-error" id="onay-hata" hidden></p>
+          </div>
+
+          <button class="button" type="submit">Rezervasyon talebini kontrol et</button>
+        </form>
+
+        <div class="result" id="form-result" tabindex="-1" hidden>
+          <h3>Rezervasyon oluşturulmadı</h3>
+          <p>
+            Bilgileriniz eksiksiz, ancak bu bir tasarım örneği: talep hiçbir yere gönderilmedi ve masa ayrılmadı.
+            Gerçek bir sitede bu adımda restorana iletilir ve size onay mesajı gönderilir.
+          </p>
+          <dl id="form-summary"></dl>
+          <button class="button button--outline" type="button" id="form-edit">Forma geri dön</button>
+        </div>
+      </section>
+
+      <aside class="booking-aside" aria-labelledby="aside-title">
+        <figure>
+          <UnsplashImage photo={photos.sofra} aspect={4 / 3} sizes="(min-width: 60rem) 28rem, 100vw" widths={[480, 800, 1200]} />
+        </figure>
+        <h2 id="aside-title">Bilmeniz gerekenler</h2>
+        <ul>
+          <li>Rezervasyonlar en geç 22.30 için alınır; masalar 15 dakika tutulur.</li>
+          <li>En fazla 60 gün sonrası için yer ayırtabilirsiniz.</li>
+          <li>Mangal çevresindeki masalar sekiz kişiliktir; daha kalabalık gruplar salonda ağırlanır.</li>
+        </ul>
+        <h3>Çalışma saatleri</h3>
+        <dl>
+          {
+            business.hours.map((h) => (
+              <>
+                <dt>{h.days}</dt>
+                <dd>{h.time}</dd>
+              </>
+            ))
+          }
+        </dl>
+      </aside>
+    </div>
+  </div>
+</RestaurantLayout>
+
+<script>
+  import { enhanceForm } from '../../lib/form-validation';
+
+  const form = document.querySelector<HTMLFormElement>('#reservation-form');
+  const result = document.querySelector<HTMLElement>('#form-result');
+  const summary = document.querySelector<HTMLDListElement>('#form-summary');
+  const edit = document.querySelector<HTMLButtonElement>('#form-edit');
+
+  if (form && result && summary && edit) {
+    enhanceForm(form, (fields) => {
+      // Demo behavior: show what would be sent; nothing leaves the browser.
+      // To go live, replace this block with a request to the reservation system
+      // and only confirm the booking when that request succeeds.
+      summary.replaceChildren(
+        ...fields
+          .filter((f) => f.value !== '')
+          .flatMap((f) => {
+            const dt = document.createElement('dt');
+            dt.textContent = f.label;
+            const dd = document.createElement('dd');
+            dd.textContent = f.value;
+            return [dt, dd];
+          }),
+      );
+      form.hidden = true;
+      result.hidden = false;
+      result.focus();
+    });
+
+    edit.addEventListener('click', () => {
+      result.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLInputElement>('input')?.focus();
+    });
+  }
+</script>
+
+<style>
+  .booking {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  @media (min-width: 60rem) {
+    .booking {
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .demo-note {
+    margin-bottom: var(--space-l);
+    padding: var(--space-s) var(--space-m);
+    background: #fff8e6;
+    border-left: 4px solid #b7791f;
+    color: #5c3d0a;
+  }
+
+  form {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .group {
+    margin: 0;
+    padding: var(--space-l) clamp(1rem, 3vw, 2rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  legend {
+    float: left;
+    width: 100%;
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--cobalt);
+  }
+
+  .row {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  @media (min-width: 40rem) {
+    .row--2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .row--3 {
+      grid-template-columns: 1.3fr 1fr 1fr;
+    }
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+
+  label {
+    font-weight: 700;
+  }
+
+  input[type='text'],
+  input[type='tel'],
+  input[type='email'],
+  input[type='date'],
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid #8a94a6;
+    border-radius: var(--radius);
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--cobalt);
+  }
+
+  [aria-invalid='true'],
+  fieldset[data-invalid='true'] {
+    border-color: var(--iznik-red);
+    border-width: 2px;
+  }
+
+  .choices {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  @media (min-width: 40rem) {
+    .choices {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .choice-item {
+    position: relative;
+  }
+
+  /* The native radio stays in the accessibility tree and keyboard order;
+     the whole label is the visible, clickable target. */
+  .choice-item input {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .choice-item label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    min-height: 3.25rem;
+    height: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 2px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--white);
+    font-weight: 600;
+  }
+
+  .choice-item input:hover + label {
+    border-color: var(--cobalt);
+  }
+
+  .choice-item input:checked + label {
+    border-color: var(--cobalt);
+    background: #e9eef8;
+    color: var(--cobalt-deep);
+    box-shadow: inset 0 0 0 1px var(--cobalt);
+  }
+
+  .choice-item input:focus-visible + label {
+    outline: 3px solid var(--iznik-red);
+    outline-offset: 2px;
+  }
+
+  .field--check {
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-s);
+    align-items: start;
+  }
+
+  .field--check input {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.15rem 0 0;
+    accent-color: var(--cobalt);
+  }
+
+  .field--check label {
+    font-weight: 400;
+  }
+
+  .field--check .field-error {
+    grid-column: 1 / -1;
+  }
+
+  .field-hint {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .field-error {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--iznik-red);
+  }
+
+  .error-summary {
+    padding: var(--space-m);
+    border: 2px solid var(--iznik-red);
+    border-radius: var(--radius);
+    background: #fdf1f0;
+  }
+
+  .error-summary h3,
+  .result h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-xs);
+  }
+
+  .error-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .error-summary a {
+    color: var(--iznik-red);
+    font-weight: 600;
+  }
+
+  form > .button {
+    justify-self: start;
+  }
+
+  .result {
+    padding: var(--space-l);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--cobalt);
+    border-radius: var(--radius);
+  }
+
+  .result p {
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+
+  .result dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem var(--space-m);
+    margin: var(--space-m) 0 var(--space-l);
+  }
+
+  .result dt {
+    font-weight: 700;
+  }
+
+  .result dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+
+  /* ---------- Aside ---------- */
+  .booking-aside figure {
+    margin: 0 0 var(--space-m);
+  }
+
+  .booking-aside :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .booking-aside h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-s);
+  }
+
+  .booking-aside h3 {
+    font-size: var(--step-1);
+    margin: var(--space-l) 0 var(--space-xs);
+  }
+
+  .booking-aside ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  .booking-aside dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.25rem var(--space-m);
+    margin: 0;
+  }
+
+  .booking-aside dd {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,67 @@
+---
+import RestaurantLayout from '../../layouts/RestaurantLayout.astro';
+import { href } from '../../lib/paths';
+---
+
+<RestaurantLayout
+  title="Kişisel verilerin korunması | Közde Ocakbaşı"
+  description="Rezervasyon formuyla paylaşılan kişisel verilerin işlenmesine dair örnek aydınlatma metni."
+>
+  <div class="wrap legal">
+    <header class="page-head">
+      <h1>Kişisel verilerin korunması</h1>
+    </header>
+
+    <p class="draft" role="note">
+      <strong>Örnek metin.</strong> Bu sayfa bir tasarım örneğinin parçasıdır; gerçek bir işletmede yayına almadan
+      önce bir hukukçu tarafından hazırlanmalı ya da gözden geçirilmelidir. Bu sitedeki form veri toplamaz.
+    </p>
+
+    <h2>Hangi veriler işlenir?</h2>
+    <p>
+      <a href={href('restoran/rezervasyon')}>Rezervasyon formunda</a> verdiğiniz ad soyad, telefon numarası,
+      isteğe bağlı e-posta adresi ve notunuz.
+    </p>
+
+    <h2>Hangi amaçla?</h2>
+    <p>Rezervasyonunuzu oluşturmak, gerekirse sizi arayıp teyit etmek ve değişiklikleri bildirmek için.</p>
+
+    <h2>Hukuki sebep</h2>
+    <p>
+      6698 sayılı Kişisel Verilerin Korunması Kanunu'nun 5. maddesi kapsamında, bir sözleşmenin kurulması için
+      gerekli olması ve formda verdiğiniz açık rıza.
+    </p>
+
+    <h2>Ne kadar süre saklanır?</h2>
+    <p>Gerçek bir işletmede saklama süresi işletmenin veri envanterine göre belirlenip burada belirtilir.</p>
+
+    <h2>Haklarınız</h2>
+    <p>
+      Kanun'un 11. maddesi uyarınca verilerinizin işlenip işlenmediğini öğrenme, düzeltilmesini ya da silinmesini
+      isteme ve işlemeye itiraz etme haklarına sahipsiniz.
+    </p>
+  </div>
+</RestaurantLayout>
+
+<style>
+  .legal {
+    max-width: 46rem;
+    padding-bottom: var(--space-2xl);
+  }
+
+  .draft {
+    padding: var(--space-s) var(--space-m);
+    background: #fff8e6;
+    border-left: 4px solid #b7791f;
+    color: #5c3d0a;
+  }
+
+  h2 {
+    font-size: var(--step-2);
+    margin: var(--space-l) 0 var(--space-xs);
+  }
+
+  p {
+    max-width: var(--measure);
+  }
+</style>

@@ -5,7 +5,8 @@ Portfolio sample websites by John Remy, built as one static Astro project and pu
 | Site | Path | Status |
 |---|---|---|
 | John Remy, artist portfolio | `/john-remy/` | MVP done, awaiting content (see below) |
-| Six concept sites | (planned) | See `PROJECT_BRIEF.md` |
+| Közde Ocakbaşı, restaurant (fictional business) | `/restoran/` | Concept done |
+| Five more concept sites | (planned) | See `PROJECT_BRIEF.md` |
 
 Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](DESIGN_DIRECTION.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
@@ -13,11 +14,12 @@ Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](
 
 - [Astro](https://astro.build) 7, static output, TypeScript strict
 - Plain CSS with per-site custom-property tokens
-- Self-hosted font: Bricolage Grotesque (OFL) via Fontsource
-- Images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
+- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Alfa Slab One + Figtree
+- Own images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
+- Stock photos hotlinked from Unsplash with responsive imgix parameters, as Unsplash's API guidelines require
 - QA: Playwright + axe-core
 
-No backend, no environment variables, no third-party scripts.
+No backend, no environment variables, no third-party scripts. The only third-party requests are Unsplash images on the concept sites.
 
 ## Commands
 
@@ -27,14 +29,17 @@ pnpm dev        # local dev server
 pnpm build      # astro check (types) + production build into dist/
 pnpm preview    # serve dist/ on http://localhost:4321/web-tasarim-ornekleri/
 pnpm test:qa    # Playwright + axe QA against the production build (run build first)
-node tests/screenshots.mjs john-remy   # Bionluk screenshots into screenshots/ (preview must be running)
+node tests/screenshots.mjs <site>   # screenshots into screenshots/<site>/ (preview must be running)
+python -I tests/covers.py <site>    # desktop + mobile cover images from those screenshots
 ```
 
 The first QA run needs a browser: `pnpm exec playwright install chromium`.
 
 ## Deployment
 
-Live: **https://cdemrcan.github.io/web-tasarim-ornekleri/john-remy/**
+Live:
+- https://cdemrcan.github.io/web-tasarim-ornekleri/john-remy/
+- https://cdemrcan.github.io/web-tasarim-ornekleri/restoran/
 
 GitHub Pages serves the `gh-pages` branch, which holds only the built `dist/` output plus a `.nojekyll` file (without it, Pages would hide the `_astro/` asset folder). To publish an update:
 
@@ -78,3 +83,17 @@ The bio and contact details are currently sample content, labeled "Örnek" on th
 
 - **The contact form is a demo.** It validates input and then states plainly that nothing was sent. To make it live, replace the marked block in `src/pages/john-remy/iletisim.astro` with a `fetch()` to a form service (for example Web3Forms or Formspree) and show success only on an OK response.
 - The "Screaming Mug" statement is shown in the artist's original English, marked `lang="en"`.
+
+## Közde Ocakbaşı (concept restaurant)
+
+A fictional ocakbaşı in Moda, Kadıköy. Every page carries a notice that the business is fictional and that names, prices and contact details are samples.
+
+**Pages:** home, menu (tabbed categories), reservation, contact and directions, privacy notice (sample).
+
+**Design:** a hand-built SVG İznik tile system (cobalt, turquoise, İznik red on glazed white) used structurally in the hero, the footer edge and the favicon. Alfa Slab One gives painted-signage headings; Figtree is the body text. The menu is set like a wall menu with dotted leaders.
+
+**Interactions:**
+- Menu tabs follow the ARIA tabs pattern (arrow keys, Home/End, URL hash). Without JavaScript all categories show, with a jump menu.
+- The reservation form validates the date (today up to 60 days ahead), the time, party size, a table-area radio group, a Turkish phone number and consent. Like the other forms, it states plainly that no booking was made.
+
+**Content:** dish names are real ocakbaşı fare; prices (TL) are samples. The address has no real number, the phone is all zeros, and the email uses the reserved `.example` domain. None are linked. Photos are Unsplash stock, credited in the footer and marked as representative.

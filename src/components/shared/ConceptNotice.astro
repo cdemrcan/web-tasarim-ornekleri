@@ -1,0 +1,46 @@
+---
+import { href } from '../../lib/paths';
+
+interface Props {
+  business: string;
+}
+
+const { business } = Astro.props;
+---
+
+<div class="concept-notice">
+  <p>
+    <strong>Tasarım örneği:</strong> {business} kurgusal bir işletmedir. İsimler, fiyatlar ve iletişim
+    bilgileri örnektir.
+    <a href={href('')}>Diğer örnekler</a>
+  </p>
+</div>
+
+<style>
+  /* Deliberately neutral so it reads as a note about the site, not part of the brand. */
+  .concept-notice {
+    background: #1d1f22;
+    color: #e9eaec;
+    font: 0.8125rem/1.5 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    text-align: center;
+  }
+
+  .concept-notice p {
+    margin: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .concept-notice a {
+    display: inline-block;
+    margin-left: 0.5rem;
+    padding-block: 0.25rem;
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .concept-notice a:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+  }
+</style>

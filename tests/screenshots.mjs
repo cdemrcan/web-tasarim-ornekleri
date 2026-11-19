@@ -8,6 +8,7 @@ const site = process.argv[2] ?? 'john-remy';
 const base = `http://localhost:4321/web-tasarim-ornekleri/${site}/`;
 const pages = {
   'john-remy': ['', 'eserler/', 'eserler/screaming-mug/', 'hakkinda/', 'iletisim/'],
+  restoran: ['', 'menu/', 'rezervasyon/', 'iletisim/'],
 }[site] ?? [''];
 
 const shots = [

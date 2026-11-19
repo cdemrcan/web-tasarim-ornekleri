@@ -1,0 +1,53 @@
+---
+/**
+ * Hand-built İznik-style tile, repeated as an SVG pattern. Corner and edge motifs
+ * are cut by the tile boundary so neighbouring tiles complete each other, the way
+ * real tile panels form circles and leaves across the joints.
+ * Purely decorative: hidden from assistive technology.
+ */
+interface Props {
+  /** Unique per page (SVG pattern ids are document-global). */
+  id: string;
+  /** Rendered tile size in px. */
+  size?: number;
+  class?: string;
+}
+
+const { id, size = 96, class: className } = Astro.props;
+const scale = size / 100;
+const petals = Array.from({ length: 8 }, (_, i) => i * 45);
+---
+
+<svg class={className} aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id={id} width={size} height={size} patternUnits="userSpaceOnUse">
+      <g transform={`scale(${scale})`}>
+        <rect width="100" height="100" fill="#ffffff" />
+        {
+          [
+            [0, 0],
+            [100, 0],
+            [0, 100],
+            [100, 100],
+          ].map(([cx, cy]) => (
+            <g>
+              <circle cx={cx} cy={cy} r="26" fill="#1b3a8c" />
+              <circle cx={cx} cy={cy} r="18" fill="#ffffff" />
+              <circle cx={cx} cy={cy} r="12" fill="#1f8783" />
+              <circle cx={cx} cy={cy} r="4.5" fill="#b3261e" />
+            </g>
+          ))
+        }
+        <ellipse cx="50" cy="0" rx="4" ry="10" fill="#1f8783" />
+        <ellipse cx="50" cy="100" rx="4" ry="10" fill="#1f8783" />
+        <ellipse cx="0" cy="50" rx="10" ry="4" fill="#1f8783" />
+        <ellipse cx="100" cy="50" rx="10" ry="4" fill="#1f8783" />
+        <path d="M50 15 L85 50 L50 85 L15 50 Z" fill="none" stroke="#1b3a8c" stroke-width="1.6" />
+        {petals.map((deg) => <ellipse cx="50" cy="35" rx="5.5" ry="12" fill="#1b3a8c" transform={`rotate(${deg} 50 50)`} />)}
+        <circle cx="50" cy="50" r="7.5" fill="#b3261e" />
+        <circle cx="50" cy="50" r="2.6" fill="#ffffff" />
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill={`url(#${id})`} />
+</svg>

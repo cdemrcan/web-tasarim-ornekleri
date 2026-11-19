@@ -1,0 +1,281 @@
+---
+import RestaurantLayout from '../../layouts/RestaurantLayout.astro';
+import { href } from '../../lib/paths';
+import { menu, tagLabels, formatPrice } from '../../sites/restoran/menu';
+---
+
+<RestaurantLayout
+  title="Menü | Közde Ocakbaşı"
+  description="Közde Ocakbaşı menüsü: mezeler, ara sıcaklar, kömür ateşinde kebaplar, tatlılar ve içecekler."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Menü</h1>
+      <p>Fiyatlar Türk lirasıdır. Bu bir tasarım örneği olduğu için yemek adları gerçek, fiyatlar örnektir.</p>
+    </header>
+
+    <div class="menu" data-tabs>
+      <!-- Without JavaScript every category stays visible and this list works as a jump menu. -->
+      <nav class="menu-jump" aria-label="Menü bölümleri" data-tabs-fallback>
+        <ul>
+          {menu.map((cat) => <li><a href={`#${cat.id}`}>{cat.title}</a></li>)}
+        </ul>
+      </nav>
+
+      <div class="menu-tablist" role="tablist" aria-label="Menü bölümleri" hidden data-tablist>
+        {
+          menu.map((cat, i) => (
+            <button
+              type="button"
+              role="tab"
+              id={`sekme-${cat.id}`}
+              aria-controls={cat.id}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              tabindex={i === 0 ? 0 : -1}
+            >
+              {cat.title}
+            </button>
+          ))
+        }
+      </div>
+
+      {
+        menu.map((cat) => (
+          <section class="menu-panel" id={cat.id} aria-labelledby={`baslik-${cat.id}`} data-panel>
+            <h2 id={`baslik-${cat.id}`}>{cat.title}</h2>
+            {cat.note && <p class="menu-note">{cat.note}</p>}
+            <ul class="dishes" role="list">
+              {cat.dishes.map((dish) => (
+                <li class="dish">
+                  <div class="dish-line">
+                    <h3>{dish.name}</h3>
+                    <span class="dish-leader" aria-hidden="true" />
+                    <span class="dish-price">{formatPrice(dish.price)}</span>
+                  </div>
+                  <p class="dish-desc">{dish.description}</p>
+                  {dish.tags && (
+                    <ul class="dish-tags" role="list" aria-label="Özellikler">
+                      {dish.tags.map((tag) => (
+                        <li class={`tag tag--${tag}`}>{tagLabels[tag]}</li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+
+    <aside class="menu-footer" aria-label="Alerjen ve rezervasyon bilgisi">
+      <p>
+        Alerjenler hakkında bilgi almak için siparişten önce servis ekibine danışın.
+        <a href={href('restoran/rezervasyon')}>Masa ayırtmak için rezervasyon formunu kullanın.</a>
+      </p>
+    </aside>
+  </div>
+</RestaurantLayout>
+
+<script>
+  // Progressive enhancement: turn the category sections into an ARIA tab interface.
+  const root = document.querySelector<HTMLElement>('[data-tabs]');
+  const tablist = root?.querySelector<HTMLElement>('[data-tablist]');
+  const fallback = root?.querySelector<HTMLElement>('[data-tabs-fallback]');
+
+  if (root && tablist && fallback) {
+    const tabs = Array.from(tablist.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-panel]'));
+
+    const select = (index: number, moveFocus: boolean, updateHash = true) => {
+      tabs.forEach((tab, i) => {
+        const active = i === index;
+        tab.setAttribute('aria-selected', String(active));
+        tab.tabIndex = active ? 0 : -1;
+        panels[i]!.hidden = !active;
+      });
+      if (moveFocus) tabs[index]!.focus();
+      // Keep the chosen category in the URL so it can be shared or reloaded.
+      if (updateHash) history.replaceState(null, '', `#${panels[index]!.id}`);
+    };
+
+    panels.forEach((panel, i) => {
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', tabs[i]!.id);
+      panel.tabIndex = 0;
+    });
+    tablist.hidden = false;
+    fallback.hidden = true;
+    root.classList.add('is-tabbed');
+
+    // Open the category named in the URL hash, if any.
+    const fromHash = panels.findIndex((p) => `#${p.id}` === location.hash);
+    select(fromHash >= 0 ? fromHash : 0, false, false);
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i, false));
+      tab.addEventListener('keydown', (e) => {
+        const last = tabs.length - 1;
+        const next = { ArrowRight: i === last ? 0 : i + 1, ArrowLeft: i === 0 ? last : i - 1, Home: 0, End: last }[e.key];
+        if (next !== undefined) {
+          e.preventDefault();
+          select(next, true);
+        }
+      });
+    });
+  }
+</script>
+
+<style>
+  .menu {
+    padding-bottom: var(--space-xl);
+  }
+
+  /* ---------- Category navigation ---------- */
+  .menu-jump ul,
+  .menu-tablist {
+    display: flex;
+    gap: var(--space-xs);
+    margin: 0 0 var(--space-l);
+    padding: 0 0 var(--space-xs);
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .menu-jump a,
+  .menu-tablist button {
+    display: inline-block;
+    flex: none;
+    min-height: 2.75rem;
+    padding: 0.55rem 1.1rem;
+    border: 2px solid var(--cobalt);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--cobalt);
+    font: inherit;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .menu-tablist button:hover {
+    background: #e9eef8;
+  }
+
+  .menu-tablist button[aria-selected='true'] {
+    background: var(--cobalt);
+    color: var(--white);
+  }
+
+  /* ---------- Panels ---------- */
+  .menu-panel {
+    padding: var(--space-l) clamp(1rem, 4vw, 2.5rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-top: 6px solid var(--cobalt);
+    border-radius: var(--radius);
+  }
+
+  .menu-panel + .menu-panel {
+    margin-top: var(--space-l);
+  }
+
+  .is-tabbed .menu-panel + .menu-panel {
+    margin-top: 0;
+  }
+
+  .menu-panel:focus-visible {
+    outline-offset: 4px;
+  }
+
+  .menu-panel h2 {
+    font-size: var(--step-3);
+  }
+
+  .menu-note {
+    margin-top: var(--space-xs);
+    color: var(--muted);
+  }
+
+  .dishes {
+    display: grid;
+    gap: var(--space-m) var(--space-xl);
+    margin: var(--space-l) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 60rem) {
+    .dishes {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .dish-line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+  }
+
+  .dish h3 {
+    font-size: var(--step-1);
+    color: var(--ink);
+  }
+
+  .dish-leader {
+    flex: 1;
+    min-width: 1rem;
+    border-bottom: 2px dotted var(--turquoise);
+    transform: translateY(-0.3em);
+  }
+
+  .dish-price {
+    font-weight: 800;
+    color: var(--iznik-red);
+    white-space: nowrap;
+  }
+
+  .dish-desc {
+    margin-top: 0.2rem;
+    color: var(--muted);
+    max-width: 32rem;
+  }
+
+  .dish-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tag {
+    padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+  }
+
+  .tag--acili {
+    background: #fbe9e7;
+    color: #8f1d17;
+  }
+
+  .tag--vejetaryen {
+    background: #e2f2f1;
+    color: #11534f;
+  }
+
+  .tag--paylasimlik {
+    background: #e9eef8;
+    color: var(--cobalt-deep);
+  }
+
+  .menu-footer {
+    padding-bottom: var(--space-2xl);
+    color: var(--muted);
+    max-width: 44rem;
+  }
+</style>

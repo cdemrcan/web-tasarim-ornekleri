@@ -1,0 +1,125 @@
+---
+import '@fontsource/alfa-slab-one/latin-400.css';
+import '@fontsource/alfa-slab-one/latin-ext-400.css';
+import '@fontsource-variable/figtree';
+import '../sites/restoran/site.css';
+import SeoHead from '../components/shared/SeoHead.astro';
+import ConceptNotice from '../components/shared/ConceptNotice.astro';
+import IznikTile from '../components/restoran/IznikTile.astro';
+import { href } from '../lib/paths';
+import { authorLink, unsplashLink } from '../lib/unsplash';
+import { business } from '../sites/restoran/business';
+import { photoList } from '../sites/restoran/photos';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  imageAlt?: string;
+}
+
+const { title, description, image = 'og/restoran.jpg', imageAlt = 'Közde Ocakbaşı: kömür ateşinde kebap şişleri' } = Astro.props;
+
+const nav = [
+  { label: 'Menü', path: 'restoran/menu' },
+  { label: 'İletişim', path: 'restoran/iletisim' },
+];
+const current = Astro.url.pathname;
+const reservationUrl = href('restoran/rezervasyon');
+const authors = [...new Map(photoList.map((p) => [p.username, p])).values()];
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1b3a8c" />
+    <link rel="icon" href={href('favicon-restoran.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <SeoHead title={title} description={description} image={image} imageAlt={imageAlt} />
+  </head>
+  <body>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <ConceptNotice business={business.name} />
+    <header class="site-header">
+      <div class="wrap">
+        <a class="logo" href={href('restoran')}>
+          <span class="logo-main">Közde</span>
+          <span class="logo-sub">Ocakbaşı</span>
+        </a>
+        <nav class="site-nav" aria-label="Ana menü">
+          <ul>
+            {
+              nav.map((item) => {
+                const url = href(item.path);
+                return (
+                  <li>
+                    <a href={url} aria-current={current === url ? 'page' : undefined}>
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })
+            }
+            <li>
+              <a class="button" href={reservationUrl} aria-current={current === reservationUrl ? 'page' : undefined}>
+                Masa ayırt
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="icerik" tabindex="-1">
+      <slot />
+    </main>
+
+    <IznikTile id="tile-footer" size={48} class="tile-band" />
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <h2>{business.name}</h2>
+          <p>{business.address} <span class="sample">örnek</span></p>
+          <p>Telefon: {business.phone} <span class="sample">örnek</span></p>
+        </div>
+        <div>
+          <h2>Çalışma saatleri</h2>
+          <dl>
+            {
+              business.hours.map((h) => (
+                <>
+                  <dt>{h.days}</dt>
+                  <dd>{h.time}</dd>
+                </>
+              ))
+            }
+          </dl>
+        </div>
+        <div>
+          <h2>Sayfalar</h2>
+          <ul>
+            <li><a href={href('restoran/menu')}>Menü</a></li>
+            <li><a href={reservationUrl}>Rezervasyon</a></li>
+            <li><a href={href('restoran/iletisim')}>İletişim ve ulaşım</a></li>
+            <li><a href={href('restoran/kvkk')}>Kişisel verilerin korunması</a></li>
+          </ul>
+        </div>
+        <p class="footer-credits">
+          Fotoğraflar:
+          {
+            authors.map((p, i) => (
+              <>
+                <a href={authorLink(p)} rel="noopener">{p.author}</a>
+                {i < authors.length - 1 ? ', ' : ''}
+              </>
+            ))
+          }
+          {' / '}
+          <a href={unsplashLink} rel="noopener">Unsplash</a>. Fotoğraflar temsilidir; işletmeye ait değildir.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

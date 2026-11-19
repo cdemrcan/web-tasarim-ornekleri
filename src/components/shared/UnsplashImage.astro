@@ -1,0 +1,30 @@
+---
+import { photoSrcset, photoUrl, type UnsplashPhoto } from '../../lib/unsplash';
+
+interface Props {
+  photo: UnsplashPhoto;
+  /** Rendered aspect ratio (width / height). Defaults to the photo's own ratio. */
+  aspect?: number;
+  sizes: string;
+  widths?: number[];
+  eager?: boolean;
+  class?: string;
+}
+
+const { photo, aspect, sizes, widths = [480, 800, 1200, 1600, 2000], eager = false, class: className } = Astro.props;
+const ratio = aspect ?? photo.width / photo.height;
+const fallbackWidth = 1200;
+---
+
+<img
+  class={className}
+  src={photoUrl(photo, fallbackWidth, aspect)}
+  srcset={photoSrcset(photo, widths, aspect)}
+  sizes={sizes}
+  width={fallbackWidth}
+  height={Math.round(fallbackWidth / ratio)}
+  alt={photo.alt}
+  loading={eager ? 'eager' : 'lazy'}
+  decoding="async"
+  fetchpriority={eager ? 'high' : undefined}
+/>

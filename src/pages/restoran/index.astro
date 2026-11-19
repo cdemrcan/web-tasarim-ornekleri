@@ -1,0 +1,354 @@
+---
+import RestaurantLayout from '../../layouts/RestaurantLayout.astro';
+import IznikTile from '../../components/restoran/IznikTile.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/restoran/photos';
+import { signatureDishes, formatPrice } from '../../sites/restoran/menu';
+import { business } from '../../sites/restoran/business';
+---
+
+<RestaurantLayout
+  title="Közde Ocakbaşı | Moda, Kadıköy"
+  description="Moda'da kömür ateşinde pişen kebaplar, günlük mezeler ve mangalın çevresinde sofralar. Menüye bakın, çevrimiçi masa ayırtın."
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-panel">
+      <IznikTile id="tile-hero" size={88} class="hero-tiles" />
+      <div class="cartouche">
+        <p class="hero-place">{business.district}</p>
+        <h1 id="hero-title">Közde Ocakbaşı</h1>
+        <p class="hero-lead">
+          Kömür ateşinde pişen kebaplar, her sabah hazırlanan mezeler ve mangalın çevresinde kurulan sofralar.
+        </p>
+        <p class="hero-actions">
+          <a class="button" href={href('restoran/rezervasyon')}>Masa ayırt</a>
+          <a class="button button--outline" href={href('restoran/menu')}>Menüye bak</a>
+        </p>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <UnsplashImage photo={photos.mangal} sizes="(min-width: 60rem) 55vw, 100vw" eager />
+    </div>
+  </section>
+
+  <section class="facts" aria-label="Kısa bilgiler">
+    <dl class="wrap">
+      <div>
+        <dt>Açık</dt>
+        <dd>Her gün 12.00'den itibaren</dd>
+      </div>
+      <div>
+        <dt>Yer</dt>
+        <dd>{business.district}, iskeleye yürüme mesafesinde</dd>
+      </div>
+      <div>
+        <dt>Rezervasyon</dt>
+        <dd><a href={href('restoran/rezervasyon')}>Çevrimiçi talep formu</a></dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="fire" aria-labelledby="fire-title">
+    <div class="wrap fire-grid">
+      <figure class="fire-photo">
+        <UnsplashImage photo={photos.kor} aspect={4 / 5} sizes="(min-width: 56rem) 40vw, 100vw" widths={[480, 800, 1200]} />
+      </figure>
+      <div class="fire-text">
+        <h2 id="fire-title">Ateşin başında</h2>
+        <p>
+          Ocakbaşında masalar mangalın çevresine dizilir. Usta siparişinizi gözünüzün önünde hazırlar: kıymayı
+          şişe sarar, közü yelpazeler, lavaşı mangalın kenarında ısıtır.
+        </p>
+        <p>
+          Mangal çevresindeki masalar rezervasyonla verilir. Salonda ve terasta da yer ayırtabilirsiniz; dilerseniz
+          ustaya en yakın köşeyi not olarak yazın.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="signature" aria-labelledby="signature-title">
+    <div class="wrap signature-grid">
+      <div class="signature-menu">
+        <h2 id="signature-title">Mangaldan çıkanlar</h2>
+        <ul class="board" role="list">
+          {
+            signatureDishes.map((dish) => (
+              <li>
+                <div class="board-line">
+                  <h3>{dish.name}</h3>
+                  <span class="board-leader" aria-hidden="true" />
+                  <span class="board-price">{formatPrice(dish.price)}</span>
+                </div>
+                <p>{dish.description}</p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="board-note">Fiyatlar örnektir.</p>
+        <a class="button button--outline" href={href('restoran/menu')}>Menünün tamamı</a>
+      </div>
+      <figure class="signature-photo">
+        <UnsplashImage photo={photos.adana} aspect={3 / 2} sizes="(min-width: 56rem) 50vw, 100vw" widths={[480, 800, 1200, 1600]} />
+      </figure>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrap cta-inner">
+      <h2 id="cta-title">Mangalın çevresinde yerinizi ayırtın</h2>
+      <p>Tarih, saat ve kişi sayısını seçin; grup ve özel gün taleplerini de aynı formdan iletebilirsiniz.</p>
+      <a class="button button--on-dark" href={href('restoran/rezervasyon')}>Rezervasyon formuna git</a>
+    </div>
+  </section>
+</RestaurantLayout>
+
+<style>
+  /* ---------- Hero: tile panel + fire photo ---------- */
+  .hero {
+    display: grid;
+    background: var(--white);
+  }
+
+  .hero-panel {
+    position: relative;
+    display: grid;
+    place-items: center;
+    padding: var(--space-xl) var(--gutter);
+    overflow: hidden;
+  }
+
+  .hero-panel :global(.hero-tiles) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* The name sits on a glazed plaque set into the tile wall. */
+  .cartouche {
+    position: relative;
+    max-width: 34rem;
+    padding: var(--space-l) clamp(1.25rem, 4vw, 2.75rem);
+    background: var(--white);
+    border: 3px solid var(--cobalt);
+    outline: 1px solid var(--cobalt);
+    outline-offset: -10px;
+    text-align: center;
+  }
+
+  .hero-place {
+    font-weight: 700;
+    color: var(--iznik-red);
+    margin-bottom: var(--space-xs);
+  }
+
+  h1 {
+    font-size: var(--step-4);
+    line-height: 0.98;
+  }
+
+  .hero-lead {
+    margin: var(--space-m) auto 0;
+    max-width: 26rem;
+    font-size: var(--step-1);
+    color: var(--ink);
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  .hero-photo :global(img) {
+    width: 100%;
+    height: 100%;
+    min-height: 18rem;
+    object-fit: cover;
+  }
+
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 5fr 7fr;
+      min-height: min(78svh, 46rem);
+    }
+  }
+
+  /* ---------- Facts strip ---------- */
+  .facts {
+    background: var(--white);
+    border-block: 1px solid var(--line);
+  }
+
+  .facts dl {
+    display: grid;
+    gap: var(--space-s) var(--space-l);
+    margin: 0 auto;
+    padding-block: var(--space-m);
+  }
+
+  @media (min-width: 48rem) {
+    .facts dl {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .facts dt {
+    font-size: var(--step--1);
+    font-weight: 700;
+    color: var(--turquoise-text);
+  }
+
+  .facts dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  /* ---------- Fire ---------- */
+  .fire {
+    padding-block: var(--space-2xl);
+  }
+
+  .fire-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  .fire-photo {
+    margin: 0;
+  }
+
+  .fire-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .fire-text h2 {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-m);
+  }
+
+  .fire-text p {
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .fire-text p + p {
+    margin-top: var(--space-s);
+  }
+
+  @media (min-width: 56rem) {
+    .fire-grid {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--space-2xl);
+    }
+  }
+
+  /* ---------- Signature dishes: a painted wall menu ---------- */
+  .signature {
+    background: var(--white);
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-2xl);
+  }
+
+  .signature-grid {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  @media (min-width: 56rem) {
+    .signature-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .signature-menu h2 {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-l);
+  }
+
+  .board {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .board-line {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-xs);
+  }
+
+  .board h3 {
+    font-size: var(--step-2);
+  }
+
+  .board-leader {
+    flex: 1;
+    min-width: 1.5rem;
+    border-bottom: 3px dotted var(--turquoise);
+    transform: translateY(-0.3em);
+  }
+
+  .board-price {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--iznik-red);
+    white-space: nowrap;
+  }
+
+  .board p {
+    margin-top: 0.25rem;
+    color: var(--muted);
+    max-width: 30rem;
+  }
+
+  .board-note {
+    margin: var(--space-m) 0 var(--space-l);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .signature-photo {
+    margin: 0;
+  }
+
+  .signature-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    background: var(--cobalt);
+    color: var(--white);
+    padding-block: var(--space-xl);
+  }
+
+  .cta-inner {
+    display: grid;
+    gap: var(--space-m);
+    justify-items: start;
+  }
+
+  .cta h2 {
+    color: var(--white);
+    font-size: var(--step-3);
+    max-width: 22ch;
+  }
+
+  .cta p {
+    max-width: var(--measure);
+    color: #e6ebf5;
+    font-size: var(--step-1);
+  }
+</style>
