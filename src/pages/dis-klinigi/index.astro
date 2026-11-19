@@ -260,11 +260,18 @@ const firstVisit = [
     color: var(--muted);
   }
 
+  /* Concern options: a quiet list of clickable lines rather than pills.
+     Hover tints the line; the chosen one gets a pine bar and bolder text. */
   .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-xs);
+    display: grid;
+    gap: 0.125rem var(--space-m);
     margin-top: var(--space-m);
+  }
+
+  @media (min-width: 36rem) {
+    .chips {
+      grid-template-columns: 1fr 1fr;
+    }
   }
 
   .chip {
@@ -282,24 +289,29 @@ const firstVisit = [
   }
 
   .chip label {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     min-height: 2.75rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--sage-deep);
-    border-radius: 999px;
-    background: var(--white);
-    font-weight: 550;
+    padding: 0.5rem 0.85rem;
+    border-left: 3px solid transparent;
+    border-radius: 0 var(--radius-s) var(--radius-s) 0;
+    color: var(--ink);
+    font-weight: 500;
     cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease, border-color 120ms ease;
   }
 
   .chip label:hover {
-    border-color: var(--pine);
+    background: var(--white);
+    border-left-color: var(--sage-deep);
+    color: var(--pine);
   }
 
   .chip input:checked + label {
-    background: var(--butter);
-    border-color: var(--ink);
+    background: var(--white);
+    border-left-color: var(--pine);
+    color: var(--pine);
+    font-weight: 650;
   }
 
   .chip input:focus-visible + label {
