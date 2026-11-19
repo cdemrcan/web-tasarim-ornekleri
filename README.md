@@ -14,7 +14,7 @@ Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](
 
 - [Astro](https://astro.build) 7, static output, TypeScript strict
 - Plain CSS with per-site custom-property tokens
-- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Alfa Slab One + Figtree
+- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree
 - Own images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
 - Stock photos hotlinked from Unsplash with responsive imgix parameters, as Unsplash's API guidelines require
 - QA: Playwright + axe-core
@@ -90,7 +90,7 @@ A fictional ocakbaşı in Moda, Kadıköy. Every page carries a notice that the 
 
 **Pages:** home, menu (tabbed categories), reservation, contact and directions, privacy notice (sample).
 
-**Design:** a hand-built SVG İznik tile system (cobalt, turquoise, İznik red on glazed white) used structurally in the hero, the footer edge and the favicon. Alfa Slab One gives painted-signage headings; Figtree is the body text. The menu is set like a wall menu with dotted leaders.
+**Design:** a hand-built SVG İznik tile system (cobalt, turquoise, İznik red on glazed white) used structurally in the hero, the footer edge and the favicon. Blue lives only in the ceramics; type and dark surfaces are warm charcoal (kömür). Young Serif sets the headings, Figtree the body text and prices. The menu is set like a wall menu with dotted leaders.
 
 **Interactions:**
 - Menu tabs follow the ARIA tabs pattern (arrow keys, Home/End, URL hash). Without JavaScript all categories show, with a jump menu.

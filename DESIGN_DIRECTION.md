@@ -15,12 +15,12 @@ Shared baseline (every site): visible focus rings in the site's own accent, `pre
 | Token | Hex | Role |
 |---|---|---|
 | `--tile` | `#F4F6F8` | Background (cool glazed white, not cream) |
-| `--cobalt` | `#1B3A8C` | Primary: headings, tile lines, buttons |
+| `--cobalt` | `#1B3A8C` | Ceramics only: tile lines, the name plaque's frame |
 | `--iznik-red` | `#B3261E` | Accent: prices, active tab |
 | `--turquoise` | `#1F8783` | Secondary tile color |
-| `--ink` | `#0E1B33` | Body text |
+| `--charcoal` | `#211C19` | Headings, body text, dark bands and footer (warm kömür, not corporate blue) |
 
-**Type:** Alfa Slab One for display (heavy slab, like painted shop signage); Figtree for body.
+**Type:** Young Serif for headings (warm, rounded, traditional); Figtree for body text and prices. *Revised after review: the first version used Alfa Slab One in cobalt, which read as corporate and rendered roughly at large sizes.*
 **Layout:** Hero splits into a large photo of the grill and a hand-built SVG tile panel holding the name. The menu page is set like a printed wall menu, with dish names, dotted leaders and prices, organized by tabbed categories.
 **Signature:** the SVG İznik tile system, built once and reused structurally.
 **Motion:** none on load. Tab changes switch instantly.

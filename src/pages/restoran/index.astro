@@ -299,8 +299,10 @@ import { business } from '../../sites/restoran/business';
     transform: translateY(-0.3em);
   }
 
+  /* Prices use the body face: its lining figures stay even ("1.150 TL"),
+     where the display serif's old-style figures bounce. */
   .board-price {
-    font-family: var(--font-display);
+    font-weight: 800;
     font-size: var(--step-1);
     color: var(--iznik-red);
     white-space: nowrap;
@@ -329,7 +331,7 @@ import { business } from '../../sites/restoran/business';
 
   /* ---------- CTA ---------- */
   .cta {
-    background: var(--cobalt);
+    background: var(--charcoal);
     color: var(--white);
     padding-block: var(--space-xl);
   }
@@ -348,7 +350,7 @@ import { business } from '../../sites/restoran/business';
 
   .cta p {
     max-width: var(--measure);
-    color: #e6ebf5;
+    color: #ece7e3;
     font-size: var(--step-1);
   }
 </style>
