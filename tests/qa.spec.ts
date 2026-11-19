@@ -23,6 +23,11 @@ const pages = [
   'hinoki/rezervasyon/',
   'hinoki/iletisim/',
   'hinoki/kvkk/',
+  'dis-klinigi/',
+  'dis-klinigi/tedaviler/',
+  'dis-klinigi/ekibimiz/',
+  'dis-klinigi/randevu/',
+  'dis-klinigi/kvkk/',
 ];
 
 const viewports = [
@@ -281,5 +286,61 @@ test.describe('hinoki', () => {
     await expect(result).toBeFocused();
     await expect(result.getByRole('heading')).toHaveText('Rezervasyon oluşturulmadı');
     await expect(result).toContainText('Suşi tezgâhı');
+  });
+});
+
+test.describe('dental clinic', () => {
+  test.use({ viewport: { width: 390, height: 844 } });
+
+  test('finder shows only the matching treatments and announces them', async ({ page }) => {
+    await open(page, 'dis-klinigi/');
+    await expect(page.locator('[data-for="eksik"]')).toBeHidden();
+    await page.getByText('Eksik dişim var').click();
+    await expect(page.locator('[data-for="eksik"]')).toBeVisible();
+    await expect(page.locator('[data-for="agri"]')).toBeHidden();
+    await expect(page.locator('[data-for="eksik"]')).toContainText('İmplant');
+    await expect(page.locator('[data-finder-status]')).toContainText('2 tedavi');
+    await page.getByText('Dişim ağrıyor').click();
+    await expect(page.locator('[data-for="agri"]')).toBeVisible();
+    await expect(page.locator('[data-for="eksik"]')).toBeHidden();
+  });
+
+  test('appointment: topic from URL, day then slot, honest result', async ({ page }) => {
+    await open(page, 'dis-klinigi/randevu/?konu=capraz');
+    await expect(page.locator('#konu')).toHaveValue('capraz');
+    const submit = page.getByRole('button', { name: 'Randevu talebini kontrol et' });
+
+    await submit.click();
+    await expect(page.locator('[data-error-summary]')).toBeFocused();
+    // gün, saat, ad, telefon, ilk ziyaret, onay
+    await expect(page.locator('[data-error-summary] li')).toHaveCount(6);
+
+    // Slots appear only after a day is picked; taken slots are disabled.
+    await expect(page.locator('[data-slots] .slots:visible')).toHaveCount(0);
+    await page.locator('label[for="gun-0"]').click();
+    const visibleSlots = page.locator('[data-slots] .slots:visible input');
+    await expect(page.locator('[data-slots] .slots:visible')).toHaveCount(1);
+    const free = page.locator('[data-slots] .slots:visible input:not(:disabled)').first();
+    const freeId = await free.getAttribute('id');
+    await page.locator(`label[for="${freeId}"]`).click();
+    await expect(free).toBeChecked();
+
+    // Switching day clears the time.
+    await page.locator('label[for="gun-1"]').click();
+    await expect(page.locator('[data-slots] input:checked')).toHaveCount(0);
+    const free2 = page.locator('[data-slots] .slots:visible input:not(:disabled)').first();
+    await page.locator(`label[for="${await free2.getAttribute('id')}"]`).click();
+
+    await page.fill('#ad', 'Deneme Kişi');
+    await page.fill('#telefon', '0532 000 00 00');
+    await page.locator('label[for="ilk-hayir"]').click();
+    await page.check('#onay');
+    await submit.click();
+    const result = page.locator('#form-result');
+    await expect(result).toBeFocused();
+    await expect(result.getByRole('heading')).toHaveText('Randevu oluşturulmadı');
+    await expect(result).toContainText('Dişlerim çapraşık');
+    await expect(result).toContainText('İlk kez geliyorum');
+    expect(await visibleSlots.count()).toBeGreaterThan(0);
   });
 });

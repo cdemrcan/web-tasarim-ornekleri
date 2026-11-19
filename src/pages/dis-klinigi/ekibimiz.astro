@@ -1,0 +1,117 @@
+---
+import ClinicLayout from '../../layouts/ClinicLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/dis-klinigi/photos';
+import { team, initials } from '../../sites/dis-klinigi/business';
+import { treatmentById } from '../../sites/dis-klinigi/treatments';
+---
+
+<ClinicLayout
+  title="Ekibimiz | Mavera Ağız ve Diş Sağlığı"
+  description="Mavera'da genel diş hekimliği, ortodonti, çocuk diş hekimliği ve ağız, diş ve çene cerrahisi alanlarında çalışan hekimler."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Ekibimiz</h1>
+      <p>Her hekim kendi alanındaki tedavileri üstlenir; birden fazla alanı ilgilendiren durumlarda plan birlikte yapılır.</p>
+    </header>
+
+    <ul class="team" role="list">
+      {
+        team.map((m) => (
+          <li class="member">
+            <span class="monogram" aria-hidden="true">{initials(m.name)}</span>
+            <div>
+              <h2>{m.name}</h2>
+              <p class="field">{m.field}</p>
+              <p class="focus">
+                Başlıca ilgilendiği tedaviler:{' '}
+                {m.focus.map((id, i) => (
+                  <>
+                    <a href={href(`dis-klinigi/tedaviler#${id}`)}>{treatmentById(id).name.toLocaleLowerCase('tr-TR')}</a>
+                    {i < m.focus.length - 1 ? ', ' : ''}
+                  </>
+                ))}
+              </p>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+
+    <aside class="note" aria-label="Örnek içerik bilgisi">
+      <p>
+        <strong>Örnek ekip.</strong> Bu tasarım örneğindeki hekim isimleri kurgusaldır. Gerçek bir klinik sitesinde
+        burada hekimlerin kendi fotoğrafları, mezun oldukları okullar ve uzmanlık bilgileri yer alır.
+      </p>
+    </aside>
+
+    <figure class="team-photo">
+      <UnsplashImage photo={photos.muayene} aspect={16 / 9} sizes="100vw" widths={[800, 1200, 1600, 2000]} />
+    </figure>
+  </div>
+</ClinicLayout>
+
+<style>
+  .team {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 52rem) {
+    .team {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .member {
+    display: flex;
+    gap: var(--space-m);
+    padding: var(--space-l);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .member :global(.monogram) {
+    width: 4.5rem;
+    height: 4.5rem;
+    font-size: 1.4rem;
+  }
+
+  .member h2 {
+    font-size: var(--step-2);
+  }
+
+  .field {
+    margin-top: 0.15rem;
+    font-weight: 600;
+    color: var(--pine);
+  }
+
+  .focus {
+    margin-top: var(--space-s);
+    color: var(--muted);
+  }
+
+  .note {
+    margin-top: var(--space-l);
+    padding: var(--space-m);
+    background: var(--butter-soft);
+    border-radius: var(--radius-s);
+    max-width: 48rem;
+  }
+
+  .team-photo {
+    margin: var(--space-xl) 0 var(--space-2xl);
+  }
+
+  .team-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+</style>

@@ -24,6 +24,11 @@ COVERS = {
         ("menu", "menu", (242, 241, 238)),
         ("iletisim", "rezervasyon", (28, 26, 24)),
     ],
+    "dis-klinigi": [
+        ("anasayfa", "anasayfa", (30, 77, 63)),
+        ("tedaviler", "tedaviler", (227, 237, 231)),
+        ("randevu", "randevu", (30, 77, 63)),
+    ],
 }
 
 

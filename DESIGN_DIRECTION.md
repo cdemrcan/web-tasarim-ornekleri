@@ -33,7 +33,7 @@ Shared baseline (every site): visible focus rings in the site's own accent, `pre
 |---|---|---|
 | `--porcelain` | `#FBFCFB` | Background |
 | `--sage` | `#E3EDE7` | Section fields |
-| `--pine` | `#123A2E` | Primary text and buttons |
+| `--pine` | `#1E4D3F` | Buttons, links, logo (headings stay near-neutral ink `#1A2421`) |
 | `--butter` | `#EFCB5E` | Accent: highlights, selected slots |
 | `--slate` | `#46554F` | Secondary text |
 

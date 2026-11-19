@@ -1,0 +1,574 @@
+---
+import ClinicLayout from '../../layouts/ClinicLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/dis-klinigi/photos';
+import { concerns, treatments, treatmentById } from '../../sites/dis-klinigi/treatments';
+import { business, team, initials } from '../../sites/dis-klinigi/business';
+
+const firstVisit = [
+  { title: 'Sizi dinleriz', text: 'Şikâyetinizi, varsa geçmiş tedavilerinizi ve kullandığınız ilaçları konuşuruz.' },
+  { title: 'Muayene', text: 'Hekim ağız içini inceler, gerekiyorsa röntgen çekilir.' },
+  { title: 'Tedavi planı', text: 'Seçenekler, seans sayısı ve süre size açıkça anlatılır; soru sormak için zaman ayrılır.' },
+  { title: 'Kararı siz verirsiniz', text: 'Tedavi, onayınızla ve size uygun bir tarihte başlar.' },
+];
+---
+
+<ClinicLayout
+  title="Mavera Ağız ve Diş Sağlığı | Ataşehir"
+  description="Ataşehir'de diş muayenesi, dolgu, kanal tedavisi, diş eti tedavisi, implant, ortodonti ve çocuk diş hekimliği. Şikâyetinize göre tedavileri inceleyin, çevrimiçi randevu isteyin."
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero-grid">
+      <div class="intro">
+        <h1 id="hero-title">Mavera Ağız ve Diş Sağlığı</h1>
+        <p class="lead">
+          Ataşehir'de genel diş hekimliği, ortodonti, çocuk diş hekimliği ve implant tedavileri. Her adımı başlamadan
+          önce birlikte konuşuruz.
+        </p>
+        <p class="actions">
+          <a class="button" href={href('dis-klinigi/randevu')}>Randevu al</a>
+          <a class="button button--outline" href={href('dis-klinigi/tedaviler')}>Tedavileri incele</a>
+        </p>
+        <dl class="quick">
+          <div>
+            <dt>Hafta içi</dt>
+            <dd>{business.hours[0].time}</dd>
+          </div>
+          <div>
+            <dt>Cumartesi</dt>
+            <dd>{business.hours[1].time}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="finder" data-finder>
+        <fieldset>
+          <legend><h2 class="finder-title">Sizi buraya ne getirdi?</h2></legend>
+          <p class="finder-help">Size en yakın olanı seçin; ilgili tedavileri aşağıda görün.</p>
+          <div class="chips">
+            {
+              concerns.map((c) => (
+                <span class="chip">
+                  <input type="radio" name="konu" id={`konu-${c.id}`} value={c.id} />
+                  <label for={`konu-${c.id}`}>{c.label}</label>
+                </span>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <p class="visually-hidden" aria-live="polite" data-finder-status></p>
+
+        <p class="finder-empty">Bir seçenek işaretlediğinizde ilgili tedaviler burada görünür.</p>
+        {
+          concerns.map((c) => (
+            <div class="finder-result" data-for={c.id}>
+              <p class="finder-note">{c.note}</p>
+              <ul role="list">
+                {c.treatments.map((id) => {
+                  const t = treatmentById(id);
+                  return (
+                    <li>
+                      <a href={href(`dis-klinigi/tedaviler#${t.id}`)}>{t.name}</a>
+                      <span>{t.summary}</span>
+                    </li>
+                  );
+                })}
+              </ul>
+              <a class="button" href={`${href('dis-klinigi/randevu')}?konu=${c.id}`}>
+                Bu konuda randevu iste
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="visit" aria-labelledby="visit-title">
+    <div class="wrap visit-grid">
+      <figure class="visit-photo">
+        <UnsplashImage photo={photos.oda} aspect={4 / 3} sizes="(min-width: 60rem) 45vw, 100vw" widths={[600, 900, 1300, 1700]} />
+      </figure>
+      <div>
+        <h2 id="visit-title">İlk ziyaretinizde neler olur?</h2>
+        <ol class="steps">
+          {
+            firstVisit.map((s) => (
+              <li>
+                <h3>{s.title}</h3>
+                <p>{s.text}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="treatments" aria-labelledby="treatments-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="treatments-title">Tedaviler</h2>
+        <a href={href('dis-klinigi/tedaviler')}>Tüm tedavilerin ayrıntıları</a>
+      </div>
+      <ul class="treatment-list" role="list">
+        {
+          treatments.map((t) => (
+            <li>
+              <a href={href(`dis-klinigi/tedaviler#${t.id}`)}>
+                <span class="t-name">{t.name}</span>
+                <span class="t-summary">{t.summary}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="team" aria-labelledby="team-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="team-title">Hekimlerimiz</h2>
+        <a href={href('dis-klinigi/ekibimiz')}>Ekibimizi tanıyın</a>
+      </div>
+      <ul class="team-list" role="list">
+        {
+          team.map((m) => (
+            <li>
+              <span class="monogram" aria-hidden="true">{initials(m.name)}</span>
+              <span>
+                <strong>{m.name}</strong>
+                <span class="field">{m.field}</span>
+              </span>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="team-note">Hekim isimleri bu tasarım örneği için kurgulanmıştır.</p>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="cta-title">
+    <div class="wrap cta-inner">
+      <div>
+        <h2 id="cta-title">Randevunuzu çevrimiçi isteyin</h2>
+        <p>Uygun gün ve saati seçin; ekibimiz sizi arayarak randevuyu teyit eder.</p>
+      </div>
+      <a class="button" href={href('dis-klinigi/randevu')}>Randevu al</a>
+    </div>
+  </section>
+</ClinicLayout>
+
+<script>
+  // The finder works with CSS alone (:has + :checked); this only announces the
+  // change to screen-reader users.
+  const finder = document.querySelector<HTMLElement>('[data-finder]');
+  const status = finder?.querySelector<HTMLElement>('[data-finder-status]');
+  finder?.addEventListener('change', (e) => {
+    const input = e.target as HTMLInputElement;
+    if (!status || input.name !== 'konu') return;
+    const panel = finder.querySelector<HTMLElement>(`[data-for="${input.value}"]`);
+    const count = panel?.querySelectorAll('li').length ?? 0;
+    const label = finder.querySelector(`label[for="${input.id}"]`)?.textContent ?? '';
+    status.textContent = `${label}: ${count} tedavi gösteriliyor.`;
+  });
+</script>
+
+<style>
+  /* ---------- Hero with concern finder ---------- */
+  .hero {
+    background: linear-gradient(var(--white), var(--porcelain));
+    padding-block: var(--space-xl);
+  }
+
+  .hero-grid {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 62rem) {
+    .hero-grid {
+      grid-template-columns: 5fr 6fr;
+      gap: var(--space-2xl);
+    }
+  }
+
+  .intro h1 {
+    font-size: var(--step-4);
+  }
+
+  .lead {
+    margin-top: var(--space-m);
+    max-width: 30rem;
+    font-size: var(--step-1);
+    color: var(--muted);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  .quick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s) var(--space-l);
+    margin: var(--space-l) 0 0;
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--line);
+  }
+
+  .quick dt {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .quick dd {
+    margin: 0;
+    font-weight: 650;
+  }
+
+  .finder {
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    background: var(--sage);
+    border-radius: var(--radius);
+  }
+
+  .finder fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .finder legend {
+    padding: 0;
+  }
+
+  .finder-title {
+    font-size: var(--step-3);
+  }
+
+  .finder-help {
+    margin-top: var(--space-xs);
+    color: var(--muted);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: var(--space-m);
+  }
+
+  .chip {
+    position: relative;
+  }
+
+  .chip input {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .chip label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--sage-deep);
+    border-radius: 999px;
+    background: var(--white);
+    font-weight: 550;
+    cursor: pointer;
+  }
+
+  .chip label:hover {
+    border-color: var(--pine);
+  }
+
+  .chip input:checked + label {
+    background: var(--butter);
+    border-color: var(--ink);
+  }
+
+  .chip input:focus-visible + label {
+    outline: 3px solid var(--pine);
+    outline-offset: 2px;
+  }
+
+  .finder-empty,
+  .finder-result {
+    margin-top: var(--space-l);
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--sage-deep);
+  }
+
+  .finder-empty {
+    color: var(--muted);
+  }
+
+  .finder-result {
+    display: none;
+  }
+
+  .finder:has(input:checked) .finder-empty {
+    display: none;
+  }
+
+  /* One rule per concern: show only the matching result. */
+  .finder:has(#konu-agri:checked) [data-for='agri'],
+  .finder:has(#konu-kanama:checked) [data-for='kanama'],
+  .finder:has(#konu-eksik:checked) [data-for='eksik'],
+  .finder:has(#konu-capraz:checked) [data-for='capraz'],
+  .finder:has(#konu-renk:checked) [data-for='renk'],
+  .finder:has(#konu-cocuk:checked) [data-for='cocuk'],
+  .finder:has(#konu-kontrol:checked) [data-for='kontrol'] {
+    display: block;
+  }
+
+  .finder-note {
+    font-weight: 550;
+  }
+
+  .finder-result ul {
+    display: grid;
+    gap: var(--space-xs);
+    margin: var(--space-m) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .finder-result li {
+    display: grid;
+    gap: 0.1rem;
+    padding: var(--space-s);
+    background: var(--white);
+    border-radius: var(--radius-s);
+  }
+
+  .finder-result li a {
+    font-weight: 650;
+  }
+
+  .finder-result li span {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  /* ---------- First visit ---------- */
+  .visit {
+    padding-block: var(--space-2xl);
+  }
+
+  .visit-grid {
+    display: grid;
+    gap: var(--space-xl);
+    align-items: center;
+  }
+
+  @media (min-width: 60rem) {
+    .visit-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .visit-photo {
+    margin: 0;
+  }
+
+  .visit-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .visit h2 {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-l);
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  .steps li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    column-gap: var(--space-s);
+  }
+
+  .steps li::before {
+    content: counter(step);
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--butter-soft);
+    border: 1px solid var(--butter);
+    /* Large enough that the "1" keeps its flag at 1x and can't read as a capital I. */
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .steps h3 {
+    font-size: var(--step-1);
+    align-self: center;
+  }
+
+  .steps p {
+    color: var(--muted);
+  }
+
+  /* ---------- Treatments overview ---------- */
+  .treatments {
+    padding-block: var(--space-2xl);
+    background: var(--white);
+    border-block: 1px solid var(--line);
+  }
+
+  .section-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-xs) var(--space-l);
+    margin-bottom: var(--space-l);
+  }
+
+  .section-head h2 {
+    font-size: var(--step-3);
+  }
+
+  .section-head a {
+    font-weight: 600;
+  }
+
+  .treatment-list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 52rem) {
+    .treatment-list {
+      grid-template-columns: 1fr 1fr;
+      column-gap: var(--space-xl);
+    }
+  }
+
+  .treatment-list a {
+    display: grid;
+    gap: 0.15rem;
+    padding: var(--space-m) 0;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .treatment-list a:hover .t-name {
+    text-decoration: underline;
+    color: var(--pine);
+  }
+
+  .t-name {
+    font-size: var(--step-1);
+    font-weight: 650;
+  }
+
+  .t-summary {
+    color: var(--muted);
+  }
+
+  /* ---------- Team teaser ---------- */
+  .team {
+    padding-block: var(--space-2xl);
+  }
+
+  .team-list {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 40rem) {
+    .team-list {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .team-list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .team-list li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+  }
+
+  .team-list strong {
+    display: block;
+    font-weight: 650;
+  }
+
+  .field {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .team-note {
+    margin-top: var(--space-l);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .cta-inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-m);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background: var(--sage);
+    border-radius: var(--radius);
+  }
+
+  .cta h2 {
+    font-size: var(--step-2);
+  }
+
+  .cta p {
+    margin-top: var(--space-xs);
+    color: var(--muted);
+  }
+</style>

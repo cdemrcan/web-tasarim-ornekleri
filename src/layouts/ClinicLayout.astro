@@ -1,0 +1,119 @@
+---
+import '@fontsource-variable/albert-sans';
+import '../sites/dis-klinigi/site.css';
+import SeoHead from '../components/shared/SeoHead.astro';
+import ConceptNotice from '../components/shared/ConceptNotice.astro';
+import { href } from '../lib/paths';
+import { authorLink, unsplashLink } from '../lib/unsplash';
+import { business } from '../sites/dis-klinigi/business';
+import { photoList } from '../sites/dis-klinigi/photos';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const current = Astro.url.pathname;
+const links = [
+  { label: 'Tedaviler', path: 'dis-klinigi/tedaviler' },
+  { label: 'Ekibimiz', path: 'dis-klinigi/ekibimiz' },
+];
+const appointmentUrl = href('dis-klinigi/randevu');
+const authors = [...new Map(photoList.map((p) => [p.username, p])).values()];
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1e4d3f" />
+    <link rel="icon" href={href('favicon-dis-klinigi.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <SeoHead title={title} description={description} image="og/dis-klinigi.jpg" imageAlt="Mavera: aydınlık bir muayene odası" />
+  </head>
+  <body>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <ConceptNotice business={business.name} />
+    <header class="site-header">
+      <div class="wrap">
+        <a class="logo" href={href('dis-klinigi')}>
+          <span class="logo-name">Mavera</span>
+          <span class="logo-sub">Ağız ve Diş Sağlığı</span>
+        </a>
+        <nav class="site-nav" aria-label="Ana menü">
+          <ul>
+            {
+              links.map((l) => {
+                const url = href(l.path);
+                return (
+                  <li>
+                    <a href={url} aria-current={current === url ? 'page' : undefined}>
+                      {l.label}
+                    </a>
+                  </li>
+                );
+              })
+            }
+            <li>
+              <a class="button" href={appointmentUrl} aria-current={current === appointmentUrl ? 'page' : undefined}>
+                Randevu al
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="icerik" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <h2>{business.name}</h2>
+          <p>{business.address} <span class="sample">örnek</span></p>
+          <p>Telefon: {business.phone} <span class="sample">örnek</span></p>
+        </div>
+        <div>
+          <h2>Çalışma saatleri</h2>
+          <dl>
+            {
+              business.hours.map((h) => (
+                <>
+                  <dt>{h.days}</dt>
+                  <dd>{h.time}</dd>
+                </>
+              ))
+            }
+          </dl>
+        </div>
+        <div>
+          <h2>Sayfalar</h2>
+          <ul>
+            <li><a href={href('dis-klinigi/tedaviler')}>Tedaviler</a></li>
+            <li><a href={href('dis-klinigi/ekibimiz')}>Ekibimiz</a></li>
+            <li><a href={appointmentUrl}>Randevu</a></li>
+            <li><a href={href('dis-klinigi/kvkk')}>Kişisel verilerin korunması</a></li>
+          </ul>
+        </div>
+        <p class="footer-note">
+          Bu sayfalardaki bilgiler genel bilgilendirme amaçlıdır; tanı ve tedavi için hekim muayenesi gerekir.
+          Fotoğraflar:
+          {
+            authors.map((p, i) => (
+              <>
+                <a href={authorLink(p)} rel="noopener">{p.author}</a>
+                {i < authors.length - 1 ? ', ' : ''}
+              </>
+            ))
+          }
+          {' / '}
+          <a href={unsplashLink} rel="noopener">Unsplash</a>; temsilidir, kliniğe ait değildir.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

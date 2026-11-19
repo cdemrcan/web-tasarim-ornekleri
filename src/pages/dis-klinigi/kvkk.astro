@@ -1,0 +1,66 @@
+---
+import ClinicLayout from '../../layouts/ClinicLayout.astro';
+import { href } from '../../lib/paths';
+---
+
+<ClinicLayout
+  title="Kişisel verilerin korunması | Mavera Ağız ve Diş Sağlığı"
+  description="Randevu formuyla paylaşılan kişisel ve sağlık verilerinin işlenmesine dair örnek aydınlatma metni."
+>
+  <div class="wrap legal">
+    <header class="page-head">
+      <h1>Kişisel verilerin korunması</h1>
+    </header>
+
+    <p class="draft" role="note">
+      <strong>Örnek metin.</strong> Bu sayfa bir tasarım örneğinin parçasıdır. Sağlık verisi işleyen gerçek bir
+      klinikte bu metin bir hukukçu tarafından hazırlanmalıdır. Bu sitedeki form veri toplamaz.
+    </p>
+
+    <h2>Hangi veriler işlenir?</h2>
+    <p>
+      <a href={href('dis-klinigi/randevu')}>Randevu formunda</a> verdiğiniz ad soyad ve telefon numarası (kimlik ve
+      iletişim verisi) ile randevu konusu ve şikâyet notunuz (sağlık verisi).
+    </p>
+
+    <h2>Sağlık verileri neden ayrıca belirtiliyor?</h2>
+    <p>
+      Sağlık verileri 6698 sayılı Kanun'un 6. maddesinde özel nitelikli kişisel veri olarak tanımlanır ve daha sıkı
+      kurallara tabidir. Bu nedenle formda bu verilerin işlenmesi için ayrıca açık rızanız istenir.
+    </p>
+
+    <h2>Hangi amaçla?</h2>
+    <p>Randevunuzu oluşturmak, teyit için sizinle iletişime geçmek ve muayene öncesinde hekimi bilgilendirmek için.</p>
+
+    <h2>Kimlerle paylaşılır?</h2>
+    <p>Yalnızca randevunuzla ilgilenen klinik çalışanlarıyla. Pazarlama amacıyla kullanılmaz.</p>
+
+    <h2>Haklarınız</h2>
+    <p>
+      Kanun'un 11. maddesi uyarınca verilerinizin işlenip işlenmediğini öğrenme, düzeltilmesini ya da silinmesini
+      isteme, açık rızanızı geri alma ve işlemeye itiraz etme haklarına sahipsiniz.
+    </p>
+  </div>
+</ClinicLayout>
+
+<style>
+  .legal {
+    max-width: 46rem;
+    padding-bottom: var(--space-2xl);
+  }
+
+  .draft {
+    padding: var(--space-s) var(--space-m);
+    background: var(--butter-soft);
+    border-radius: var(--radius-s);
+  }
+
+  h2 {
+    font-size: var(--step-2);
+    margin: var(--space-l) 0 var(--space-xs);
+  }
+
+  p {
+    max-width: var(--measure);
+  }
+</style>

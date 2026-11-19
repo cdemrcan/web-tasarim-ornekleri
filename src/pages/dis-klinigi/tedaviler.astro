@@ -1,0 +1,179 @@
+---
+import ClinicLayout from '../../layouts/ClinicLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/dis-klinigi/photos';
+import { treatments, concerns } from '../../sites/dis-klinigi/treatments';
+
+// For each treatment, the concern to preselect on the appointment form.
+const concernFor = (id: string) => concerns.find((c) => c.treatments[0] === id)?.id ?? concerns.find((c) => c.treatments.includes(id))?.id;
+---
+
+<ClinicLayout
+  title="Tedaviler | Mavera Ağız ve Diş Sağlığı"
+  description="Muayene, dolgu, kanal tedavisi, diş eti tedavisi, implant, köprü ve protez, ortodonti, diş beyazlatma ve çocuk diş hekimliği hakkında bilgi."
+>
+  <div class="wrap">
+    <header class="page-head head-grid">
+      <div>
+        <h1>Tedaviler</h1>
+        <p>
+          Her tedavinin ne zaman gerektiğini, nasıl yapıldığını ve genellikle kaç seans sürdüğünü özetledik. Size uygun
+          seçeneğe muayeneden sonra birlikte karar veririz.
+        </p>
+      </div>
+      <figure class="head-photo">
+        <UnsplashImage photo={photos.koltuk} aspect={4 / 5} sizes="(min-width: 56rem) 22rem, 100vw" widths={[400, 700, 1000]} eager />
+      </figure>
+    </header>
+
+    <nav class="jump" aria-label="Tedaviler">
+      <ul>
+        {treatments.map((t) => <li><a href={`#${t.id}`}>{t.name}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="list">
+      {
+        treatments.map((t) => {
+          const konu = concernFor(t.id);
+          return (
+            <section class="treatment" id={t.id} aria-labelledby={`${t.id}-baslik`}>
+              <h2 id={`${t.id}-baslik`}>{t.name}</h2>
+              <p class="summary">{t.summary}</p>
+              <dl>
+                <div>
+                  <dt>Ne zaman gerekir?</dt>
+                  <dd>{t.when}</dd>
+                </div>
+                <div>
+                  <dt>Nasıl yapılır?</dt>
+                  <dd>{t.how}</dd>
+                </div>
+                <div>
+                  <dt>Kaç seans?</dt>
+                  <dd>{t.visits}</dd>
+                </div>
+              </dl>
+              <a class="button button--outline" href={`${href('dis-klinigi/randevu')}${konu ? `?konu=${konu}` : ''}`}>
+                Randevu iste<span class="visually-hidden">: {t.name}</span>
+              </a>
+            </section>
+          );
+        })
+      }
+    </div>
+
+    <p class="disclaimer">
+      Bu sayfadaki bilgiler genel bilgilendirme amaçlıdır. Tanı ve tedavi planı yalnızca hekim muayenesiyle yapılır;
+      seans sayıları kişiden kişiye değişir.
+    </p>
+  </div>
+</ClinicLayout>
+
+<style>
+  .head-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: end;
+  }
+
+  @media (min-width: 56rem) {
+    .head-grid {
+      grid-template-columns: 1fr 22rem;
+    }
+  }
+
+  .head-photo {
+    margin: 0;
+  }
+
+  .head-photo :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .jump ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin: 0 0 var(--space-xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  .jump a {
+    display: inline-block;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--sage-deep);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--ink);
+    text-decoration: none;
+    font-size: var(--step--1);
+    font-weight: 550;
+  }
+
+  .jump a:hover {
+    border-color: var(--pine);
+  }
+
+  .list {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .treatment {
+    scroll-margin-top: var(--space-m);
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .treatment:target {
+    border-color: var(--pine);
+    box-shadow: 0 0 0 2px var(--sage-deep);
+  }
+
+  .treatment h2 {
+    font-size: var(--step-2);
+  }
+
+  .summary {
+    margin-top: var(--space-xs);
+    font-size: var(--step-1);
+    color: var(--muted);
+    max-width: 44rem;
+  }
+
+  .treatment dl {
+    display: grid;
+    gap: var(--space-m);
+    margin: var(--space-l) 0;
+  }
+
+  @media (min-width: 52rem) {
+    .treatment dl {
+      grid-template-columns: 1fr 1fr 0.6fr;
+      gap: var(--space-l);
+    }
+  }
+
+  .treatment dt {
+    font-weight: 650;
+    margin-bottom: 0.2rem;
+  }
+
+  .treatment dd {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .disclaimer {
+    margin-block: var(--space-xl) var(--space-2xl);
+    max-width: 44rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+</style>

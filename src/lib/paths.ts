@@ -4,11 +4,13 @@
  */
 export function href(path = ''): string {
   const base = import.meta.env.BASE_URL.replace(/\/+$/, '');
-  const clean = path.replace(/^\/+/, '');
-  if (clean === '') return `${base}/`;
-  const hasExtension = /\.[a-z0-9]+$/i.test(clean);
-  const withSlash = hasExtension || clean.endsWith('/') || clean.includes('#') ? clean : `${clean}/`;
-  return `${base}/${withSlash}`;
+  const [rawPath = '', hash] = path.replace(/^\/+/, '').split('#', 2);
+  const fragment = hash !== undefined ? `#${hash}` : '';
+  if (rawPath === '') return `${base}/${fragment}`;
+  const hasExtension = /\.[a-z0-9]+$/i.test(rawPath);
+  // Pages need the trailing slash before any #fragment ("tedaviler/#implant").
+  const withSlash = hasExtension || rawPath.endsWith('/') ? rawPath : `${rawPath}/`;
+  return `${base}/${withSlash}${fragment}`;
 }
 
 /** Absolute URL for canonical / Open Graph tags. */

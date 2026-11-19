@@ -170,6 +170,11 @@ function displayValue(control: Control): string {
   return first.value.trim();
 }
 
+/** First field of the control that is actually rendered (radio groups may hide some options). */
+function visibleTarget(control: Control): HTMLElement {
+  return control.fields.find((f) => f.getClientRects().length > 0 && !f.disabled) ?? control.focusTarget;
+}
+
 function collectControls(form: HTMLFormElement): Control[] {
   const controls: Control[] = [];
   const seenGroups = new Set<string>();
@@ -252,11 +257,11 @@ export function enhanceForm(
         ...errors.map(({ control, message }) => {
           const li = document.createElement('li');
           const a = document.createElement('a');
-          a.href = `#${control.focusTarget.id}`;
+          a.href = `#${visibleTarget(control).id}`;
           a.textContent = message;
           a.addEventListener('click', (e) => {
             e.preventDefault();
-            control.focusTarget.focus();
+            visibleTarget(control).focus();
           });
           li.append(a);
           return li;
@@ -266,7 +271,7 @@ export function enhanceForm(
     }
 
     if (errors.length > 0) {
-      (summary ?? errors[0]!.control.focusTarget).focus();
+      (summary ?? visibleTarget(errors[0]!.control)).focus();
       return;
     }
 

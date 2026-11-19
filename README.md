@@ -7,7 +7,8 @@ Portfolio sample websites by John Remy, built as one static Astro project and pu
 | John Remy, artist portfolio | `/john-remy/` | MVP done, awaiting content (see below) |
 | Közde Ocakbaşı, restaurant (fictional business) | `/restoran/` | Concept done |
 | Hinoki, modern Japanese restaurant (fictional business) | `/hinoki/` | Concept done |
-| Five more concept sites | (planned) | See `PROJECT_BRIEF.md` |
+| Mavera, dental clinic (fictional business) | `/dis-klinigi/` | Concept done |
+| Four more concept sites | (planned) | See `PROJECT_BRIEF.md` |
 
 Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](DESIGN_DIRECTION.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
 
@@ -15,7 +16,7 @@ Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](
 
 - [Astro](https://astro.build) 7, static output, TypeScript strict
 - Plain CSS with per-site custom-property tokens
-- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree; Shippori Mincho + Nunito Sans
+- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree; Shippori Mincho + Nunito Sans; Albert Sans
 - Own images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
 - Stock photos hotlinked from Unsplash with responsive imgix parameters, as Unsplash's API guidelines require
 - QA: Playwright + axe-core
@@ -32,6 +33,7 @@ pnpm preview    # serve dist/ on http://localhost:4321/web-tasarim-ornekleri/
 pnpm test:qa    # Playwright + axe QA against the production build (run build first)
 node tests/screenshots.mjs <site>   # screenshots into screenshots/<site>/ (preview must be running)
 python -I tests/covers.py <site>    # desktop + mobile cover images from those screenshots
+node tests/text-crop.mjs <path> <selector> <out.png>   # 1x crop to judge font rendering as on a normal monitor
 ```
 
 The first QA run needs a browser: `pnpm exec playwright install chromium`.
@@ -42,6 +44,7 @@ Live:
 - https://cdemrcan.github.io/web-tasarim-ornekleri/john-remy/
 - https://cdemrcan.github.io/web-tasarim-ornekleri/restoran/
 - https://cdemrcan.github.io/web-tasarim-ornekleri/hinoki/
+- https://cdemrcan.github.io/web-tasarim-ornekleri/dis-klinigi/
 
 GitHub Pages serves the `gh-pages` branch, which holds only the built `dist/` output plus a `.nojekyll` file (without it, Pages would hide the `_astro/` asset folder). To publish an update:
 
@@ -111,3 +114,17 @@ A fictional omakase counter and restaurant on the Arnavutköy waterfront. Like K
 **Design:** warm sumi-ink black on white, hinoki-wood hairlines, vermilion only in the hanko-seal logo (檜). Shippori Mincho headings (a Japanese family with Turkish character support) and Nunito Sans body text.
 
 **Reservation:** seating area (counter / salon / terrace), date up to 30 days ahead, time in 15-minute steps, party size up to 8, phone and consent. Honest demo result, as on the other sites.
+
+## Mavera Ağız ve Diş Sağlığı (concept dental clinic)
+
+A fictional clinic in Ataşehir. Every page flags the business as fictional.
+
+**Pages:** home with a concern-led treatment finder, treatments guide, team, appointment, privacy notice (health-data sample).
+
+**Sector rules applied:** health-provider advertising in Turkey is regulated, so the copy is informational only: no prices, no guarantees, no "painless" or "best" claims, no before/after images, plus a general-information disclaimer. The team is fictional and shown with name, field and initials only. Stock portraits were deliberately not used, since they would put a real person's face on an invented dentist.
+
+**Interactions:**
+- **Finder:** pick a concern ("Dişim ağrıyor", "Eksik dişim var"…) to see the matching treatments, with a link to request an appointment on that topic. It works with CSS alone (`:has(:checked)`); a small script announces the result to screen readers.
+- **Appointment:** the topic is preselected from `?konu=`. The visitor picks one of the next ten working days, then a 30-minute slot. Taken slots are disabled; they are a stable demo pattern and are labeled as samples. Health data needs explicit consent. Like the other forms, it states plainly that no appointment was made.
+
+**Design:** porcelain and sage, pine for actions, butter for selected states, near-neutral ink headings. Albert Sans at weight 430 for body text, checked at 1x for even rendering.

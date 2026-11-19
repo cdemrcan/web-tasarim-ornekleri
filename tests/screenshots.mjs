@@ -10,6 +10,7 @@ const pages = {
   'john-remy': ['', 'eserler/', 'eserler/screaming-mug/', 'hakkinda/', 'iletisim/'],
   restoran: ['', 'menu/', 'rezervasyon/', 'iletisim/'],
   hinoki: ['', 'menu/', 'rezervasyon/', 'iletisim/'],
+  'dis-klinigi': ['', 'tedaviler/', 'ekibimiz/', 'randevu/'],
 }[site] ?? [''];
 
 const shots = [

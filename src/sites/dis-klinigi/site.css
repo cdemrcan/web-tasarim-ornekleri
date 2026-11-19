@@ -1,0 +1,347 @@
+/* ==========================================================================
+   Mavera Ağız ve Diş Sağlığı: concept dental clinic
+   Calm rather than clinical: sage fields, pine actions, butter for the
+   selected state. Headings are near-neutral ink, not a brand color.
+   Contrast: ink on porcelain 15.8:1, muted 7.1:1, white on pine 9.6:1.
+   ========================================================================== */
+
+:root {
+  --porcelain: #fbfcfb;
+  --white: #ffffff;
+  --sage: #e3ede7;
+  --sage-deep: #c9dbd1;
+  --pine: #1e4d3f;
+  --pine-hover: #163b30;
+  --ink: #1a2421;
+  --muted: #4f5d57;
+  --butter: #f2d06b;
+  --butter-soft: #fbf1cf;
+  --line: #d4ddd8;
+  --alert: #a3341f;
+
+  --font: 'Albert Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: clamp(1.5rem, 1.3rem + 0.9vw, 1.875rem);
+  --step-3: clamp(2rem, 1.6rem + 1.9vw, 2.875rem);
+  --step-4: clamp(2.5rem, 1.8rem + 3.4vw, 4.25rem);
+
+  --space-xs: 0.5rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 2.5rem;
+  --space-xl: clamp(3rem, 2rem + 4vw, 5.5rem);
+  --space-2xl: clamp(4.5rem, 3rem + 6vw, 8rem);
+
+  --gutter: clamp(1rem, 0.5rem + 2.5vw, 2.5rem);
+  --max: 76rem;
+  --measure: 36rem;
+  --radius: 14px;
+  --radius-s: 8px;
+
+  color-scheme: light;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--porcelain);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--step-0);
+  /* Slightly above 400: Albert Sans renders more evenly at 1x on Windows. */
+  font-weight: 430;
+  line-height: 1.65;
+}
+
+main {
+  flex: 1;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--pine);
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--pine);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100%;
+  z-index: 20;
+  padding: var(--space-xs) var(--space-s);
+  background: var(--pine);
+  color: var(--white);
+  border-radius: var(--radius-s);
+}
+
+.skip-link:focus {
+  top: var(--space-s);
+}
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  margin-inline: auto;
+}
+
+/* ---------- Header ---------- */
+
+.site-header {
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header .wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs) var(--space-l);
+  padding-block: var(--space-s);
+}
+
+.logo {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.5rem;
+  color: var(--ink);
+  text-decoration: none;
+  padding-block: 0.25rem;
+}
+
+.logo-name {
+  font-size: 1.5rem;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  color: var(--pine);
+}
+
+.logo-sub {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.site-nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs) var(--space-m);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav a:not(.button) {
+  display: inline-block;
+  padding: 0.6rem 0.1rem;
+  color: var(--ink);
+  font-weight: 550;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+}
+
+.site-nav a:not(.button):hover {
+  border-bottom-color: var(--sage-deep);
+}
+
+.site-nav a:not(.button)[aria-current='page'] {
+  border-bottom-color: var(--pine);
+}
+
+/* ---------- Buttons ---------- */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 3rem;
+  padding: 0.7rem 1.4rem;
+  border: 2px solid var(--pine);
+  border-radius: 999px;
+  background: var(--pine);
+  color: var(--white);
+  font: inherit;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.button:hover {
+  background: var(--pine-hover);
+  border-color: var(--pine-hover);
+}
+
+.button--outline {
+  background: transparent;
+  color: var(--pine);
+}
+
+.button--outline:hover {
+  background: var(--sage);
+  color: var(--pine-hover);
+}
+
+.site-nav .button[aria-current='page'] {
+  background: var(--pine-hover);
+}
+
+/* ---------- Shared bits ---------- */
+
+.page-head {
+  padding-block: var(--space-xl) var(--space-l);
+}
+
+.page-head h1 {
+  font-size: var(--step-4);
+}
+
+.page-head p {
+  margin-top: var(--space-s);
+  max-width: var(--measure);
+  color: var(--muted);
+  font-size: var(--step-1);
+}
+
+.sample {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1.55;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.monogram {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: var(--sage);
+  color: var(--pine);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  background: var(--sage);
+  color: var(--ink);
+  font-size: var(--step--1);
+}
+
+.site-footer .wrap {
+  display: grid;
+  gap: var(--space-l);
+  padding-block: var(--space-xl) var(--space-l);
+}
+
+@media (min-width: 52rem) {
+  .site-footer .wrap {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+}
+
+.site-footer h2 {
+  margin-bottom: var(--space-xs);
+  font-size: var(--step-1);
+}
+
+.site-footer ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer li a {
+  display: inline-block;
+  padding-block: 0.35rem;
+}
+
+.site-footer dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.25rem var(--space-m);
+  margin: 0;
+}
+
+.site-footer dd {
+  margin: 0;
+}
+
+.footer-note {
+  grid-column: 1 / -1;
+  padding-top: var(--space-m);
+  border-top: 1px solid var(--sage-deep);
+  color: var(--muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}

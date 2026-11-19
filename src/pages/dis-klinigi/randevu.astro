@@ -1,0 +1,616 @@
+---
+import ClinicLayout from '../../layouts/ClinicLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/dis-klinigi/photos';
+import { concerns } from '../../sites/dis-klinigi/treatments';
+import { business } from '../../sites/dis-klinigi/business';
+---
+
+<ClinicLayout
+  title="Randevu al | Mavera Ağız ve Diş Sağlığı"
+  description="Mavera'dan çevrimiçi randevu isteyin: konuyu, uygun gün ve saati seçin."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Randevu al</h1>
+      <p>Konuyu, size uygun günü ve saati seçin. Talebiniz ekibimize ulaştığında sizi arayarak randevuyu teyit ederiz.</p>
+    </header>
+
+    <div class="booking">
+      <section aria-labelledby="form-title">
+        <h2 id="form-title" class="visually-hidden">Randevu formu</h2>
+        <p class="demo-note" role="note">
+          Bu bir tasarım örneğidir: takvimdeki uygun saatler örnektir ve form hiçbir yere gönderilmez.
+        </p>
+
+        <noscript>
+          <p class="noscript">Randevu takvimi için tarayıcınızda JavaScript açık olmalıdır.</p>
+        </noscript>
+
+        <form id="appointment-form" action="#" method="post">
+          <div class="error-summary" data-error-summary tabindex="-1" hidden>
+            <h3>Formda düzeltilmesi gereken alanlar var</h3>
+            <ul></ul>
+          </div>
+
+          <div class="step">
+            <h3 class="step-title"><span aria-hidden="true">1</span> Konu</h3>
+            <div class="field">
+              <label for="konu" data-name="Konu">Randevu konusu</label>
+              <select id="konu" name="konu" required>
+                <option value="">Seçin</option>
+                {concerns.map((c) => <option value={c.id}>{c.label}</option>)}
+                <option value="diger">Diğer</option>
+              </select>
+              <p class="field-error" id="konu-hata" hidden></p>
+            </div>
+          </div>
+
+          <div class="step">
+            <h3 class="step-title"><span aria-hidden="true">2</span> Gün ve saat</h3>
+            <fieldset class="picker" data-name="Gün">
+              <legend>Gün</legend>
+              <div class="days" data-days></div>
+              <p class="field-error" id="gun-hata" hidden></p>
+            </fieldset>
+
+            <fieldset class="picker" data-name="Saat">
+              <legend>Saat</legend>
+              <p class="slots-empty" data-slots-empty>Önce bir gün seçin.</p>
+              <div data-slots></div>
+              <p class="slots-legend" aria-hidden="true"><span class="swatch"></span> Dolu saatler seçilemez.</p>
+              <p class="field-error" id="saat-hata" hidden></p>
+            </fieldset>
+          </div>
+
+          <div class="step">
+            <h3 class="step-title"><span aria-hidden="true">3</span> İletişim bilgileriniz</h3>
+            <div class="grid-2">
+              <div class="field">
+                <label for="ad" data-name="Ad soyad">Adınız ve soyadınız</label>
+                <input id="ad" name="ad" type="text" autocomplete="name" required maxlength="80" />
+                <p class="field-error" id="ad-hata" hidden></p>
+              </div>
+              <div class="field">
+                <label for="telefon" data-name="Telefon">Cep telefonunuz</label>
+                <input id="telefon" name="telefon" type="tel" autocomplete="tel" inputmode="tel" required placeholder="05XX XXX XX XX" maxlength="20" />
+                <p class="field-error" id="telefon-hata" hidden></p>
+              </div>
+            </div>
+
+            <fieldset class="inline-choice" data-name="Daha önce gelme durumu">
+              <legend>Kliniğimize daha önce geldiniz mi?</legend>
+              <div class="inline-options">
+                <span><input type="radio" id="ilk-hayir" name="ilk" value="hayir" required /><label for="ilk-hayir">İlk kez geliyorum</label></span>
+                <span><input type="radio" id="ilk-evet" name="ilk" value="evet" required /><label for="ilk-evet">Daha önce geldim</label></span>
+              </div>
+              <p class="field-error" id="ilk-hata" hidden></p>
+            </fieldset>
+
+            <div class="field">
+              <label for="not" data-name="Not">Şikâyetinizi kısaca yazın (isteğe bağlı)</label>
+              <textarea id="not" name="not" rows="3" maxlength="500"></textarea>
+              <p class="field-error" id="not-hata" hidden></p>
+            </div>
+
+            <div class="field field--check">
+              <input id="onay" name="onay" type="checkbox" required />
+              <label for="onay" data-name="Açık rıza">
+                Randevumun oluşturulması için kimlik, iletişim ve sağlık bilgilerimin işlenmesine açık rıza veriyorum.
+                <a href={href('dis-klinigi/kvkk')}>Aydınlatma metni</a>
+              </label>
+              <p class="field-error" id="onay-hata" hidden></p>
+            </div>
+          </div>
+
+          <button class="button" type="submit">Randevu talebini kontrol et</button>
+        </form>
+
+        <div class="result" id="form-result" tabindex="-1" hidden>
+          <h3>Randevu oluşturulmadı</h3>
+          <p>
+            Bilgileriniz eksiksiz. Bu bir tasarım örneği olduğu için talep hiçbir yere gönderilmedi. Gerçek bir sitede
+            bu adımda kliniğin randevu sistemine iletilir ve size onay mesajı gelir.
+          </p>
+          <dl id="form-summary"></dl>
+          <button class="button button--outline" type="button" id="form-edit">Forma geri dön</button>
+        </div>
+      </section>
+
+      <aside class="aside" aria-labelledby="aside-title">
+        <figure>
+          <UnsplashImage photo={photos.ayna} aspect={4 / 3} sizes="(min-width: 60rem) 24rem, 100vw" widths={[480, 800, 1100]} />
+        </figure>
+        <h2 id="aside-title">Bilmeniz gerekenler</h2>
+        <ul>
+          <li>İlk muayeneye varsa eski röntgenlerinizi ve kullandığınız ilaçların listesini getirin.</li>
+          <li>Randevunuza gelemeyecekseniz bir gün önceden haber verin.</li>
+          <li><strong>Şiddetli ağrı, şişlik ya da diş kırılması</strong> gibi acil durumlarda formu beklemeden telefonla arayın.</li>
+        </ul>
+        <p class="phone">Telefon: {business.phone} <span class="sample">örnek</span></p>
+      </aside>
+    </div>
+  </div>
+</ClinicLayout>
+
+<script>
+  import { enhanceForm } from '../../lib/form-validation';
+
+  const form = document.querySelector<HTMLFormElement>('#appointment-form');
+  const daysHost = form?.querySelector<HTMLElement>('[data-days]');
+  const slotsHost = form?.querySelector<HTMLElement>('[data-slots]');
+  const slotsEmpty = form?.querySelector<HTMLElement>('[data-slots-empty]');
+  const result = document.querySelector<HTMLElement>('#form-result');
+  const summary = document.querySelector<HTMLDListElement>('#form-summary');
+  const edit = document.querySelector<HTMLButtonElement>('#form-edit');
+
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  // Turkish reads "Cum 20 Kas"; Intl's default order is "20 Kas Cum", so assemble the parts.
+  const dayParts = new Intl.DateTimeFormat('tr-TR', { weekday: 'short', day: 'numeric', month: 'short' });
+  const dayLabel = {
+    format(d: Date) {
+      const part = (type: string) => dayParts.formatToParts(d).find((p) => p.type === type)?.value ?? '';
+      return `${part('weekday')} ${part('day')} ${part('month')}`;
+    },
+  };
+  const fullLabel = new Intl.DateTimeFormat('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  /** Demo availability: a stable pseudo-random subset of slots is shown as taken. */
+  function isTaken(key: string): boolean {
+    let h = 0;
+    for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    return h % 4 === 0;
+  }
+
+  /** Next ten working days (Monday–Saturday), starting tomorrow. */
+  function workingDays(): Date[] {
+    const days: Date[] = [];
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    while (days.length < 10) {
+      d.setDate(d.getDate() + 1);
+      if (d.getDay() !== 0) days.push(new Date(d));
+    }
+    return days;
+  }
+
+  function slotsFor(day: Date): string[] {
+    const last = day.getDay() === 6 ? 14 * 60 + 30 : 18 * 60 + 30;
+    const out: string[] = [];
+    for (let m = 9 * 60; m <= last; m += 30) out.push(`${pad(Math.floor(m / 60))}.${pad(m % 60)}`);
+    return out;
+  }
+
+  function radio(name: string, id: string, value: string, text: string, opts: { disabled?: boolean; hint?: string } = {}) {
+    const wrap = document.createElement('span');
+    wrap.className = 'opt';
+    const input = document.createElement('input');
+    input.type = 'radio';
+    input.name = name;
+    input.id = id;
+    input.value = value;
+    input.required = true;
+    if (opts.disabled) input.disabled = true;
+    const label = document.createElement('label');
+    label.htmlFor = id;
+    label.textContent = text;
+    if (opts.hint) {
+      const hint = document.createElement('span');
+      hint.className = 'visually-hidden';
+      hint.textContent = opts.hint;
+      label.append(hint);
+    }
+    wrap.append(input, label);
+    return wrap;
+  }
+
+  if (form && daysHost && slotsHost && slotsEmpty && result && summary && edit) {
+    // Build every day's slots up front so the validator sees one stable radio group.
+    workingDays().forEach((day, i) => {
+      const key = iso(day);
+      const dayRadio = radio('gun', `gun-${i}`, key, dayLabel.format(day));
+      dayRadio.querySelector('label')!.title = fullLabel.format(day);
+      daysHost.append(dayRadio);
+
+      const group = document.createElement('div');
+      group.className = 'slots';
+      group.dataset.day = key;
+      group.hidden = true;
+      slotsFor(day).forEach((time, j) => {
+        const taken = isTaken(`${key} ${time}`);
+        group.append(radio('saat', `saat-${i}-${j}`, `${key} ${time}`, time, { disabled: taken, hint: taken ? ' (dolu)' : '' }));
+      });
+      slotsHost.append(group);
+    });
+
+    daysHost.addEventListener('change', (e) => {
+      const day = (e.target as HTMLInputElement).value;
+      slotsEmpty.hidden = true;
+      for (const g of slotsHost.querySelectorAll<HTMLElement>('.slots')) g.hidden = g.dataset.day !== day;
+      // A time from another day no longer applies.
+      for (const r of slotsHost.querySelectorAll<HTMLInputElement>('input:checked')) {
+        if (!r.value.startsWith(day)) r.checked = false;
+      }
+    });
+
+    // Preselect the topic when arriving from a treatment link (?konu=...).
+    const topic = new URLSearchParams(location.search).get('konu');
+    const select = form.querySelector<HTMLSelectElement>('#konu');
+    if (topic && select && [...select.options].some((o) => o.value === topic)) select.value = topic;
+
+    enhanceForm(form, (fields) => {
+      // Demo behavior: nothing leaves the browser.
+      summary.replaceChildren(
+        ...fields
+          .filter((f) => f.value !== '')
+          .flatMap((f) => {
+            const dt = document.createElement('dt');
+            dt.textContent = f.label;
+            const dd = document.createElement('dd');
+            dd.textContent = f.value;
+            return [dt, dd];
+          }),
+      );
+      form.hidden = true;
+      result.hidden = false;
+      result.focus();
+    });
+
+    edit.addEventListener('click', () => {
+      result.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLSelectElement>('#konu')?.focus();
+    });
+  }
+</script>
+
+<style>
+  .booking {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  @media (min-width: 60rem) {
+    .booking {
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  .demo-note,
+  .noscript {
+    margin-bottom: var(--space-l);
+    padding: var(--space-s) var(--space-m);
+    background: var(--butter-soft);
+    border-radius: var(--radius-s);
+  }
+
+  form {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  .step {
+    display: grid;
+    gap: var(--space-m);
+    padding: clamp(1.25rem, 3vw, 2rem);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .step-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-s);
+    font-size: var(--step-2);
+  }
+
+  .step-title span {
+    display: inline-grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    background: var(--sage);
+    color: var(--pine);
+    font-size: 1.25rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  fieldset {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  legend {
+    padding: 0;
+    margin-bottom: var(--space-xs);
+    font-weight: 650;
+  }
+
+  .field {
+    display: grid;
+    gap: 0.35rem;
+    align-content: start;
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  .grid-2 {
+    display: grid;
+    gap: var(--space-m);
+  }
+
+  @media (min-width: 40rem) {
+    .grid-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  input[type='text'],
+  input[type='tel'],
+  select,
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #8b9a93;
+    border-radius: var(--radius-s);
+    background: var(--white);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: var(--pine);
+  }
+
+  [aria-invalid='true'] {
+    border-color: var(--alert);
+    border-width: 2px;
+  }
+
+  /* ---------- Day and time picker ---------- */
+  .days,
+  .slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .slots[hidden] {
+    display: none;
+  }
+
+  .slots-empty {
+    color: var(--muted);
+  }
+
+  .slots-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .swatch {
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    border: 1px dashed #9aa7a1;
+    border-radius: 4px;
+    background: repeating-linear-gradient(135deg, transparent 0 4px, #e4e9e6 4px 6px);
+  }
+
+  .picker + .picker {
+    margin-top: var(--space-s);
+  }
+
+  :global(.opt) {
+    position: relative;
+  }
+
+  :global(.opt input) {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  :global(.opt label),
+  .inline-options label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-s);
+    background: var(--white);
+    font-weight: 550;
+    cursor: pointer;
+  }
+
+  .days :global(.opt label) {
+    min-width: 6.5rem;
+    justify-content: center;
+  }
+
+  .slots :global(.opt label) {
+    min-width: 4.75rem;
+    justify-content: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  :global(.opt label:hover) {
+    border-color: var(--pine);
+  }
+
+  :global(.opt input:checked + label),
+  .inline-options input:checked + label {
+    background: var(--butter);
+    border-color: var(--ink);
+  }
+
+  :global(.opt input:focus-visible + label),
+  .inline-options input:focus-visible + label {
+    outline: 3px solid var(--pine);
+    outline-offset: 2px;
+  }
+
+  :global(.opt input:disabled + label) {
+    color: #8b958f;
+    border-style: dashed;
+    background: repeating-linear-gradient(135deg, transparent 0 4px, #eef1ef 4px 6px);
+    text-decoration: line-through;
+    cursor: not-allowed;
+  }
+
+  .inline-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  .inline-options span {
+    position: relative;
+  }
+
+  .inline-options input {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    opacity: 0;
+  }
+
+  .field--check {
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-s);
+    align-items: start;
+  }
+
+  .field--check input {
+    width: 1.4rem;
+    height: 1.4rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--pine);
+  }
+
+  .field--check label {
+    font-weight: 400;
+  }
+
+  .field--check .field-error {
+    grid-column: 1 / -1;
+  }
+
+  .field-error {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--alert);
+  }
+
+  .error-summary {
+    padding: var(--space-m);
+    border: 2px solid var(--alert);
+    border-radius: var(--radius-s);
+    background: #fdf3f1;
+  }
+
+  .error-summary h3,
+  .result h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-xs);
+  }
+
+  .error-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .error-summary a {
+    color: var(--alert);
+  }
+
+  form > .button {
+    justify-self: start;
+  }
+
+  .result {
+    padding: var(--space-l);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+
+  .result p {
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+
+  .result dl {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem var(--space-m);
+    margin: var(--space-m) 0 var(--space-l);
+  }
+
+  .result dt {
+    font-weight: 650;
+  }
+
+  .result dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+
+  /* ---------- Aside ---------- */
+  .aside figure {
+    margin: 0 0 var(--space-m);
+  }
+
+  .aside :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+
+  .aside h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-s);
+  }
+
+  .aside ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    display: grid;
+    gap: var(--space-xs);
+    color: var(--muted);
+  }
+
+  .phone {
+    margin-top: var(--space-m);
+    font-weight: 650;
+  }
+</style>
