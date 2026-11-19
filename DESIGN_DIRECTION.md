@@ -150,7 +150,7 @@ Shared baseline (every site): visible focus rings in the site's own accent, `pre
 | `--hinoki-text` | `#76572F` | Small labels on white (6.4:1) |
 | `--shu` | `#A63A2B` | Vermilion: the hanko seal only |
 
-**Type:** Shippori Mincho for headings (a Japanese mincho whose Latin letters are fine and calm), Zen Kaku Gothic New for body. Both include Turkish characters. Sentence case throughout, so no all-caps navigation.
+**Type:** Shippori Mincho for headings (a Japanese mincho whose Latin letters are fine and calm), Nunito Sans for body: soft, clean and smooth on Windows. Both include Turkish characters. *Revised after review: Zen Kaku Gothic New body text rendered rough at 1x.* Sentence case throughout, so no all-caps navigation.
 **Layout:** a full-viewport hero photo with the name bottom-left; rows that alternate image and text; a photo band; a numbered four-step ordering guide (a real sequence); a menu with a sticky category index that tracks the scroll position.
 **Signature:** the hanko seal logo (檜 in a vermilion square) and the omakase-first menu.
 **Motion:** none except smooth in-page scrolling (off under reduced motion).

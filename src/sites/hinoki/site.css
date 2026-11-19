@@ -17,7 +17,9 @@
   --line: #dedad3;
 
   --font-display: 'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', Georgia, serif;
-  --font-body: 'Zen Kaku Gothic New', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Nunito Sans: soft terminals, clean at body sizes on Windows.
+     (Zen Kaku Gothic New's Latin rendered rough at 1x and was replaced.) */
+  --font-body: 'Nunito Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --step--1: 0.875rem;
   --step-0: 1.0625rem;
@@ -66,8 +68,7 @@ body {
   color: var(--sumi);
   font-family: var(--font-body);
   font-size: var(--step-0);
-  line-height: 1.75;
-  letter-spacing: 0.01em;
+  line-height: 1.7;
 }
 
 main {

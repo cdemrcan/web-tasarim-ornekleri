@@ -15,7 +15,7 @@ Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](
 
 - [Astro](https://astro.build) 7, static output, TypeScript strict
 - Plain CSS with per-site custom-property tokens
-- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree; Shippori Mincho + Zen Kaku Gothic New
+- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree; Shippori Mincho + Nunito Sans
 - Own images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
 - Stock photos hotlinked from Unsplash with responsive imgix parameters, as Unsplash's API guidelines require
 - QA: Playwright + axe-core
@@ -108,6 +108,6 @@ A fictional omakase counter and restaurant on the Arnavutköy waterfront. Like K
 
 **Pages:** home, menu (tasting menus plus à la carte with a sticky, scroll-tracking course index), reservation, contact (OpenStreetMap of the neighbourhood, desaturated), privacy notice (sample).
 
-**Design:** warm sumi-ink black on white, hinoki-wood hairlines, vermilion only in the hanko-seal logo (檜). Shippori Mincho headings and Zen Kaku Gothic New body text, both Japanese families with Turkish character support.
+**Design:** warm sumi-ink black on white, hinoki-wood hairlines, vermilion only in the hanko-seal logo (檜). Shippori Mincho headings (a Japanese family with Turkish character support) and Nunito Sans body text.
 
 **Reservation:** seating area (counter / salon / terrace), date up to 30 days ahead, time in 15-minute steps, party size up to 8, phone and consent. Honest demo result, as on the other sites.
