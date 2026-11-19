@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.astro/
+test-results/
+playwright-report/
+qa-screenshots/
+# Bionluk screenshots and original uploads stay local (sources live in src/assets)
+screenshots/
+artwork/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db

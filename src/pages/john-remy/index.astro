@@ -1,0 +1,291 @@
+---
+import { Picture } from 'astro:assets';
+import ArtistLayout from '../../layouts/ArtistLayout.astro';
+import { artworks, artworkBySlug } from '../../sites/john-remy/artworks';
+import { href, absoluteUrl } from '../../lib/paths';
+
+const hero = artworkBySlug('untitled-834769')!;
+const mug = artworkBySlug('screaming-mug')!;
+const figure = artworkBySlug('untitled-271503')!;
+const eye = artworkBySlug('untitled-590118')!;
+
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: 'John Remy',
+  jobTitle: 'Sanatçı',
+  url: absoluteUrl(href('john-remy'), Astro.site),
+};
+---
+
+<ArtistLayout
+  title="John Remy | Sanatçı"
+  description={`John Remy'nin eserleri: ${artworks.map((a) => a.title).join(', ')}. Kırmızı ve siyahın, ışık ile karanlığın arasında çizimler.`}
+  ground="blood"
+  type="profile"
+  jsonLd={[person]}
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <h1 id="hero-title" class="hero-name">John Remy</h1>
+    <figure class="hero-art">
+      <Picture
+        src={hero.image}
+        alt={hero.alt}
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={[480, 800, 1200, 1600, 2000]}
+        sizes="(min-width: 64rem) 58rem, 100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+      <figcaption>
+        <a href={href(`john-remy/eserler/${hero.slug}`)}>{hero.title}</a>
+      </figcaption>
+    </figure>
+    <p class="hero-actions">
+      <a class="button" href="#eserler">Eserleri gör</a>
+    </p>
+  </section>
+
+  <section id="eserler" class="works" aria-labelledby="works-title">
+    <div class="wrap">
+      <h2 id="works-title" class="works-title">Eserler</h2>
+
+      <article class="feature">
+        <a class="feature-image" href={href(`john-remy/eserler/${mug.slug}`)} aria-label={`${mug.title}: eser sayfasını aç`}>
+          <Picture
+            src={mug.image}
+            alt={mug.alt}
+            formats={['avif']}
+            fallbackFormat="webp"
+            widths={[480, 800, 1100, 1499]}
+            sizes="(min-width: 60rem) 52vw, 100vw"
+          />
+        </a>
+        <div class="feature-text">
+          <h3>{mug.title}</h3>
+          {
+            mug.statement && (
+              <blockquote lang={mug.statement.lang}>
+                <p>{mug.statement.text}</p>
+              </blockquote>
+            )
+          }
+          <a class="text-link" href={href(`john-remy/eserler/${mug.slug}`)}>Eser sayfasını aç</a>
+        </div>
+      </article>
+
+      <div class="pair">
+        {
+          [figure, eye].map((work, i) => (
+            <article class:list={['pair-item', i === 0 ? 'pair-item--tall' : 'pair-item--square']}>
+              <a href={href(`john-remy/eserler/${work.slug}`)} aria-label={`${work.title}: eser sayfasını aç`}>
+                <Picture
+                  src={work.image}
+                  alt={work.alt}
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  widths={i === 0 ? [360, 600, 837] : [480, 800, 1200, 1600]}
+                  sizes={i === 0 ? '(min-width: 60rem) 30vw, 70vw' : '(min-width: 60rem) 48vw, 100vw'}
+                />
+              </a>
+              <h3>
+                <a href={href(`john-remy/eserler/${work.slug}`)}>{work.title}</a>
+              </h3>
+            </article>
+          ))
+        }
+      </div>
+
+      <p class="works-all">
+        <a class="button button--ghost" href={href('john-remy/eserler')}>Tüm eserleri listele</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="contact-band" aria-labelledby="contact-title">
+    <div class="wrap">
+      <h2 id="contact-title">Bir eser hakkında soru sormak ya da birlikte çalışmak için yazın.</h2>
+      <a class="button" href={href('john-remy/iletisim')}>İletişim formuna git</a>
+    </div>
+  </section>
+</ArtistLayout>
+
+<style>
+  /* ---------- Hero: the page ground is the butterfly's ground ---------- */
+  .hero {
+    /* Wide enough to dominate, short enough that the whole butterfly fits in
+       the first screen beneath the name on laptop-height displays. */
+    /* Measured: wings end at ~86% of the image, name ends ~19rem from the top. */
+    --art: min(100vw, 58rem, (100svh - 19rem) / 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: var(--space-m);
+    padding-bottom: var(--space-xl);
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .hero-name {
+    position: relative;
+    z-index: 1;
+    font-size: var(--step-display);
+    font-weight: 800;
+    font-stretch: 75%;
+    line-height: 0.82;
+    letter-spacing: -0.02em;
+    padding-inline: var(--gutter);
+  }
+
+  /* The top ~10% of the artwork is empty ground, so the name can sit over it
+     without touching the drawing (the antennae start at about 10%). */
+  .hero-art {
+    width: var(--art);
+    margin: calc(var(--art) * -0.075) 0 0;
+  }
+
+  .hero-art :global(img) {
+    width: 100%;
+  }
+
+  .hero-art figcaption {
+    margin-top: calc(var(--art) * -0.06);
+    position: relative;
+    font-size: var(--step--1);
+    color: var(--rosewash);
+  }
+
+  .hero-art figcaption a {
+    display: inline-block;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .hero-actions {
+    margin-top: var(--space-m);
+  }
+
+  /* ---------- Works ---------- */
+  .works {
+    background: var(--black);
+    padding-block: var(--space-2xl);
+  }
+
+  .works-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-xl);
+  }
+
+  .feature {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  .feature-text h3 {
+    font-size: var(--step-3);
+  }
+
+  .feature-text blockquote {
+    margin: var(--space-m) 0;
+    max-width: 30rem;
+    font-size: var(--step-1);
+    font-weight: 300;
+    line-height: 1.45;
+    color: var(--bone);
+  }
+
+  .text-link {
+    display: inline-block;
+    padding-block: 0.6rem;
+    color: var(--ash);
+  }
+
+  .text-link:hover {
+    color: var(--bone);
+  }
+
+  .pair {
+    display: grid;
+    gap: var(--space-xl) var(--space-l);
+    margin-top: var(--space-2xl);
+  }
+
+  .pair-item h3 {
+    margin-top: var(--space-s);
+    font-size: var(--step-2);
+  }
+
+  .pair-item h3 a {
+    text-decoration: none;
+  }
+
+  .pair-item h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .pair-item--tall {
+    width: min(70%, 22rem);
+  }
+
+  .works-all {
+    margin-top: var(--space-2xl);
+  }
+
+  @media (min-width: 60rem) {
+    .feature {
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+    }
+
+    .feature-image {
+      grid-column: 1 / 8;
+    }
+
+    .feature-text {
+      grid-column: 9 / 13;
+      padding-bottom: var(--space-l);
+    }
+
+    .pair {
+      grid-template-columns: repeat(12, 1fr);
+      align-items: start;
+    }
+
+    .pair-item--tall {
+      grid-column: 2 / 5;
+      width: auto;
+    }
+
+    .pair-item--square {
+      grid-column: 6 / 13;
+      margin-top: var(--space-2xl);
+    }
+
+    .works-all {
+      text-align: right;
+    }
+  }
+
+  /* ---------- Contact band (red bookend) ---------- */
+  .contact-band {
+    background: var(--blood);
+    padding-block: var(--space-xl);
+  }
+
+  .contact-band .wrap {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-l);
+  }
+
+  .contact-band h2 {
+    font-size: var(--step-3);
+    max-width: 18ch;
+  }
+
+  .contact-band .button:hover {
+    color: var(--bone);
+  }
+</style>

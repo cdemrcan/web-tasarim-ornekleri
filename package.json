@@ -1,0 +1,28 @@
+{
+  "name": "web-tasarim-ornekleri",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "John Remy web design portfolio samples (Astro, static).",
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "test:qa": "playwright test"
+  },
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.5",
+    "@fontsource-variable/bricolage-grotesque": "^5.3.0",
+    "astro": "^7.4.12"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.65.1",
+    "typescript": "^6.0.3"
+  }
+}

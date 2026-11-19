@@ -1,0 +1,101 @@
+---
+import { Picture } from 'astro:assets';
+import ArtistLayout from '../../layouts/ArtistLayout.astro';
+import portre from '../../assets/john-remy/portre.png';
+import { artist } from '../../sites/john-remy/artworks';
+import { href } from '../../lib/paths';
+---
+
+<ArtistLayout
+  title="Hakkında | John Remy"
+  description="Sanatçı John Remy hakkında."
+  type="profile"
+>
+  <div class="wrap about">
+    <figure class="about-portrait">
+      <Picture
+        src={portre}
+        alt="John Remy'nin siyah beyaz portre fotoğrafı. Fotoğraf baş aşağı çevrilmiş; yüz karanlığın içinden aydınlanıyor."
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={[320, 640]}
+        sizes="(min-width: 56rem) 28rem, 100vw"
+        loading="eager"
+      />
+    </figure>
+
+    <div class="about-text">
+      <h1>John Remy</h1>
+      {
+        artist.bio ? (
+          <div class="about-bio">
+            {artist.bio.map((paragraph) => <p>{paragraph}</p>)}
+            {artist.bioIsSample && <p class="sample-note">Örnek metin: sanatçı onayı bekleniyor.</p>}
+          </div>
+        ) : (
+          <div class="placeholder" role="note">
+            <strong>Biyografi henüz eklenmedi.</strong>
+            Bu alana sanatçının kendi anlatımıyla kısa bir biyografi gelecek.
+          </div>
+        )
+      }
+      <p class="about-links">
+        <a class="button button--ghost" href={href('john-remy/eserler')}>Eserlere göz at</a>
+        <a class="button" href={href('john-remy/iletisim')}>İletişime geç</a>
+      </p>
+    </div>
+  </div>
+</ArtistLayout>
+
+<style>
+  .about {
+    display: grid;
+    gap: var(--space-l);
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .about-portrait {
+    margin: 0;
+    max-width: 28rem;
+  }
+
+  .about-portrait :global(img) {
+    width: 100%;
+  }
+
+  h1 {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-m);
+  }
+
+  .about-bio {
+    max-width: var(--measure);
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .about-bio p + p {
+    margin-top: var(--space-s);
+  }
+
+  .about-bio .sample-note {
+    margin-top: var(--space-m);
+    font-size: var(--step--1);
+    color: var(--ash);
+  }
+
+  .about-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  @media (min-width: 56rem) {
+    .about {
+      grid-template-columns: minmax(0, 28rem) minmax(0, 1fr);
+      gap: var(--space-xl);
+      align-items: end;
+    }
+  }
+</style>

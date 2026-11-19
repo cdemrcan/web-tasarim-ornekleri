@@ -1,0 +1,80 @@
+---
+import '@fontsource-variable/bricolage-grotesque/standard.css';
+import '../sites/john-remy/site.css';
+import SeoHead from '../components/shared/SeoHead.astro';
+import { href } from '../lib/paths';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Page background, matching the ground of the artwork shown. */
+  ground?: 'black' | 'blood';
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article' | 'profile';
+  jsonLd?: Record<string, unknown>[];
+  noindex?: boolean;
+}
+
+const { ground = 'black', image = 'og/john-remy.jpg', imageAlt, ...seo } = Astro.props;
+const year = new Date().getFullYear();
+
+const nav = [
+  { label: 'Eserler', path: 'john-remy/eserler' },
+  { label: 'Hakkında', path: 'john-remy/hakkinda' },
+  { label: 'İletişim', path: 'john-remy/iletisim' },
+];
+const current = Astro.url.pathname;
+const themeColor = ground === 'blood' ? '#8b0b00' : '#000000';
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content={themeColor} />
+    <link rel="icon" href={href('favicon-john-remy.svg')} type="image/svg+xml" />
+    <SeoHead {...seo} image={image} imageAlt={imageAlt ?? 'John Remy, kırmızı zemin üzerinde siyah kelebek'} />
+  </head>
+  <body data-ground={ground}>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="wordmark" href={href('john-remy')}>John Remy</a>
+        <nav class="site-nav" aria-label="Ana menü">
+          <ul>
+            {
+              nav.map((item) => {
+                const url = href(item.path);
+                // Exact match marks the page; a detail page inside a section marks the section.
+                const state = current === url ? 'page' : current.startsWith(url) ? 'true' : undefined;
+                return (
+                  <li>
+                    <a href={url} aria-current={state}>
+                      {item.label}
+                    </a>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="icerik" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <p>© {year} John Remy. Eserlerin tüm hakları sanatçıya aittir.</p>
+        <ul>
+          <li><a href={href('john-remy/kvkk')}>Kişisel verilerin korunması</a></li>
+          <li><a href={href('john-remy/iletisim')}>İletişim</a></li>
+        </ul>
+      </div>
+    </footer>
+  </body>
+</html>

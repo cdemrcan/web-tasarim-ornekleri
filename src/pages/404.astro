@@ -1,0 +1,12 @@
+---
+import ArtistLayout from '../layouts/ArtistLayout.astro';
+import { href } from '../lib/paths';
+---
+
+<ArtistLayout title="Sayfa bulunamadı" description="Aradığınız sayfa bulunamadı." noindex>
+  <div class="wrap page-head">
+    <h1>Sayfa bulunamadı</h1>
+    <p>Bağlantı değişmiş ya da sayfa kaldırılmış olabilir.</p>
+    <p><a href={href('john-remy')}>Ana sayfaya dönün</a> ya da <a href={href('john-remy/eserler')}>eserlere göz atın</a>.</p>
+  </div>
+</ArtistLayout>

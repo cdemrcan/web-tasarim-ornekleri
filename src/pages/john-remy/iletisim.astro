@@ -1,0 +1,342 @@
+---
+import ArtistLayout from '../../layouts/ArtistLayout.astro';
+import { artist } from '../../sites/john-remy/artworks';
+import { href } from '../../lib/paths';
+---
+
+<ArtistLayout
+  title="İletişim | John Remy"
+  description="John Remy'ye eserler ve iş birlikleri hakkında mesaj gönderin."
+>
+  <div class="wrap contact">
+    <header class="page-head">
+      <h1>İletişim</h1>
+      <p>Bir eser, sergi ya da iş birliği hakkında yazabilirsiniz.</p>
+    </header>
+
+    <div class="contact-grid">
+      <aside class="channels" aria-labelledby="channels-title">
+        <h2 id="channels-title">Doğrudan iletişim</h2>
+        {
+          artist.contact.email || artist.contact.instagram ? (
+            <>
+              <dl class="channel-list">
+                {artist.contact.email && (
+                  <div>
+                    <dt>E-posta</dt>
+                    <dd>
+                      {artist.contact.isSample ? (
+                        <span>{artist.contact.email}</span>
+                      ) : (
+                        <a href={`mailto:${artist.contact.email}`}>{artist.contact.email}</a>
+                      )}
+                    </dd>
+                  </div>
+                )}
+                {artist.contact.instagram && (
+                  <div>
+                    <dt>Instagram</dt>
+                    <dd>
+                      {artist.contact.isSample ? (
+                        <span>@{artist.contact.instagram}</span>
+                      ) : (
+                        <a href={`https://www.instagram.com/${artist.contact.instagram}/`} rel="me noopener">
+                          @{artist.contact.instagram}
+                        </a>
+                      )}
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              {artist.contact.isSample && (
+                <p class="sample-note">Örnek iletişim bilgileri: bu adresler kimseye ulaşmaz.</p>
+              )}
+            </>
+          ) : (
+            <div class="placeholder" role="note">
+              <strong>İletişim bilgileri henüz eklenmedi.</strong>
+              E-posta adresi ve sosyal medya hesapları bu alanda yer alacak.
+            </div>
+          )
+        }
+      </aside>
+
+      <section class="form-area" aria-labelledby="form-title">
+        <h2 id="form-title">Mesaj gönderin</h2>
+        <p class="demo-note" role="note">
+          Bu form şimdilik demo olarak çalışıyor: bilgileri kontrol eder ama mesajınızı göndermez.
+        </p>
+
+        <form id="contact-form" class="form" action="#" method="post">
+          <div class="error-summary" data-error-summary tabindex="-1" hidden>
+            <h3>Formda düzeltilmesi gereken alanlar var</h3>
+            <ul></ul>
+          </div>
+
+          <div class="field">
+            <label for="ad">Adınız</label>
+            <input id="ad" name="ad" type="text" autocomplete="name" required maxlength="80" />
+            <p class="field-error" id="ad-hata" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="eposta" data-name="E-posta">E-posta adresiniz</label>
+            <input id="eposta" name="eposta" type="email" autocomplete="email" inputmode="email" required maxlength="120" />
+            <p class="field-error" id="eposta-hata" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="konu" data-name="Konu">Konu (isteğe bağlı)</label>
+            <input id="konu" name="konu" type="text" maxlength="120" />
+            <p class="field-error" id="konu-hata" hidden></p>
+          </div>
+
+          <div class="field">
+            <label for="mesaj" data-name="Mesaj">Mesajınız</label>
+            <textarea id="mesaj" name="mesaj" rows="6" required minlength="20" maxlength="2000" aria-describedby="mesaj-ipucu"></textarea>
+            <p class="field-hint" id="mesaj-ipucu">En az 20 karakter.</p>
+            <p class="field-error" id="mesaj-hata" hidden></p>
+          </div>
+
+          <div class="field field--check">
+            <input id="onay" name="onay" type="checkbox" required />
+            <label for="onay" data-name="Kişisel veri onayı">
+              Bu mesajı yanıtlamak için adımın ve e-posta adresimin kullanılmasını kabul ediyorum.
+              <a href={href('john-remy/kvkk')}>Aydınlatma metnini okuyun</a>.
+            </label>
+            <p class="field-error" id="onay-hata" hidden></p>
+          </div>
+
+          <button class="button" type="submit">Mesajı kontrol et</button>
+        </form>
+
+        <div class="result" id="form-result" tabindex="-1" hidden>
+          <h3>Mesajınız gönderilmedi</h3>
+          <p>
+            Bilgileriniz eksiksiz, ancak bu form henüz bir e-posta hizmetine bağlı değil. Aşağıdaki
+            mesaj hiçbir yere iletilmedi ve saklanmadı.
+          </p>
+          <dl id="form-summary"></dl>
+          <button class="button button--ghost" type="button" id="form-edit">Forma geri dön</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</ArtistLayout>
+
+<script>
+  import { enhanceForm } from '../../lib/form-validation';
+
+  const form = document.querySelector<HTMLFormElement>('#contact-form');
+  const result = document.querySelector<HTMLElement>('#form-result');
+  const summary = document.querySelector<HTMLDListElement>('#form-summary');
+  const edit = document.querySelector<HTMLButtonElement>('#form-edit');
+
+  if (form && result && summary && edit) {
+    enhanceForm(form, (fields) => {
+      // Demo behavior: show what would be sent; nothing leaves the browser.
+      // To go live, replace this block with a fetch() to the chosen form endpoint
+      // and only show a success message when the response is OK.
+      summary.replaceChildren(
+        ...fields
+          .filter((f) => f.value !== '')
+          .flatMap((f) => {
+            const dt = document.createElement('dt');
+            dt.textContent = f.label;
+            const dd = document.createElement('dd');
+            dd.textContent = f.value;
+            return [dt, dd];
+          }),
+      );
+      form.hidden = true;
+      result.hidden = false;
+      result.focus();
+    });
+
+    edit.addEventListener('click', () => {
+      result.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLInputElement>('input')?.focus();
+    });
+  }
+</script>
+
+<style>
+  .contact-grid {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  @media (min-width: 56rem) {
+    .contact-grid {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+      gap: var(--space-2xl);
+    }
+  }
+
+  h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-m);
+  }
+
+  .channel-list {
+    display: grid;
+    gap: var(--space-m);
+    margin: 0;
+  }
+
+  .channel-list dt {
+    font-size: var(--step--1);
+    color: var(--ash);
+  }
+
+  .channel-list dd {
+    margin: 0;
+    font-size: var(--step-1);
+    overflow-wrap: anywhere;
+  }
+
+  .channel-list a {
+    display: inline-block;
+    padding-block: 0.4rem;
+  }
+
+  .sample-note {
+    margin-top: var(--space-m);
+    font-size: var(--step--1);
+    color: var(--ash);
+  }
+
+  .demo-note {
+    margin-bottom: var(--space-l);
+    padding-left: var(--space-s);
+    border-left: 3px solid var(--blood);
+    color: var(--ash);
+    max-width: var(--measure);
+  }
+
+  .form {
+    display: grid;
+    gap: var(--space-m);
+    max-width: 36rem;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-xs);
+  }
+
+  label {
+    font-weight: 600;
+  }
+
+  input[type='text'],
+  input[type='email'],
+  textarea {
+    width: 100%;
+    min-height: 3rem;
+    padding: 0.75rem 0.875rem;
+    border: 1px solid #6b6b6b;
+    border-radius: 0;
+    background: #0d0d0d;
+    color: var(--bone);
+    font: inherit;
+  }
+
+  textarea {
+    resize: vertical;
+  }
+
+  input:hover,
+  textarea:hover {
+    border-color: var(--ash);
+  }
+
+  input[aria-invalid='true'],
+  textarea[aria-invalid='true'] {
+    border-color: #ff8a80;
+    border-width: 2px;
+  }
+
+  .field--check {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: var(--space-s);
+  }
+
+  .field--check input {
+    width: 1.5rem;
+    height: 1.5rem;
+    margin: 0.1rem 0 0;
+    accent-color: var(--blood);
+  }
+
+  .field--check label {
+    font-weight: 400;
+  }
+
+  .field--check .field-error {
+    grid-column: 1 / -1;
+  }
+
+  .field-hint {
+    font-size: var(--step--1);
+    color: var(--ash);
+  }
+
+  .field-error {
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: #ff8a80; /* 8.6:1 on black */
+  }
+
+  .error-summary {
+    padding: var(--space-m);
+    border: 2px solid #ff8a80;
+  }
+
+  .error-summary h3,
+  .result h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-xs);
+  }
+
+  .error-summary ul {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .error-summary a {
+    color: #ff8a80;
+  }
+
+  .result {
+    max-width: 36rem;
+    padding: var(--space-m);
+    border: 1px solid var(--line);
+  }
+
+  .result p {
+    color: var(--ash);
+  }
+
+  .result dl {
+    margin: var(--space-m) 0;
+  }
+
+  .result dt {
+    font-size: var(--step--1);
+    color: var(--ash);
+  }
+
+  .result dd {
+    margin: 0 0 var(--space-s);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .button {
+    justify-self: start;
+  }
+</style>

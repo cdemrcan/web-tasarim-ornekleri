@@ -1,0 +1,187 @@
+---
+import { Picture, getImage } from 'astro:assets';
+import ArtistLayout from '../../../layouts/ArtistLayout.astro';
+import { artworks, type Artwork } from '../../../sites/john-remy/artworks';
+import { href, absoluteUrl } from '../../../lib/paths';
+
+export function getStaticPaths() {
+  return artworks.map((work, index) => ({
+    params: { slug: work.slug },
+    props: {
+      work,
+      prev: artworks[(index - 1 + artworks.length) % artworks.length]!,
+      next: artworks[(index + 1) % artworks.length]!,
+      position: index + 1,
+    },
+  }));
+}
+
+interface Props {
+  work: Artwork;
+  prev: Artwork;
+  next: Artwork;
+  position: number;
+}
+
+const { work, prev, next, position } = Astro.props;
+
+const ogImage = await getImage({ src: work.image, width: 1200, format: 'jpg' });
+const pageUrl = absoluteUrl(href(`john-remy/eserler/${work.slug}`), Astro.site);
+
+const artworkData = {
+  '@context': 'https://schema.org',
+  '@type': 'VisualArtwork',
+  name: work.title,
+  image: absoluteUrl(ogImage.src, Astro.site),
+  url: pageUrl,
+  creator: { '@type': 'Person', name: 'John Remy' },
+  ...(work.statement ? { description: work.statement.text } : {}),
+};
+
+const description = work.statement
+  ? `${work.title}, John Remy. ${work.statement.text}`
+  : `${work.title}, John Remy'nin eseri. ${work.alt}`;
+---
+
+<ArtistLayout
+  title={`${work.title} | John Remy`}
+  description={description}
+  ground={work.ground}
+  type="article"
+  image={ogImage.src.replace(import.meta.env.BASE_URL, '').replace(/^\/+/, '')}
+  imageAlt={work.alt}
+  jsonLd={[artworkData]}
+>
+  <article class="artwork">
+    <figure class="artwork-figure">
+      <Picture
+        src={work.image}
+        alt={work.alt}
+        formats={['avif']}
+        fallbackFormat="webp"
+        widths={[480, 800, 1200, 1600, 2000].filter((w) => w <= work.image.width)}
+        sizes="(min-width: 64rem) 60vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+      />
+    </figure>
+
+    <div class="wrap artwork-info">
+      <p class="artwork-count">Eser {position} / {artworks.length}</p>
+      <h1>{work.title}</h1>
+      {
+        work.statement && (
+          <blockquote lang={work.statement.lang}>
+            <p>{work.statement.text}</p>
+          </blockquote>
+        )
+      }
+
+      <nav class="artwork-nav" aria-label="Diğer eserler">
+        <a href={href(`john-remy/eserler/${prev.slug}`)} rel="prev">
+          <span class="artwork-nav-label">Önceki eser</span>
+          <span>{prev.title}</span>
+        </a>
+        <a href={href('john-remy/eserler')}>Tüm eserler</a>
+        <a href={href(`john-remy/eserler/${next.slug}`)} rel="next">
+          <span class="artwork-nav-label">Sonraki eser</span>
+          <span>{next.title}</span>
+        </a>
+      </nav>
+    </div>
+  </article>
+</ArtistLayout>
+
+<style>
+  .artwork {
+    padding-bottom: var(--space-2xl);
+  }
+
+  .artwork-figure {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    padding: var(--space-s) var(--gutter) 0;
+  }
+
+  /* Keep the whole work visible on any screen: never taller than the viewport. */
+  .artwork-figure :global(img) {
+    width: auto;
+    max-height: calc(100svh - 7rem);
+    object-fit: contain;
+  }
+
+  .artwork-info {
+    max-width: 48rem;
+    padding-top: var(--space-l);
+    text-align: center;
+  }
+
+  .artwork-count {
+    font-size: var(--step--1);
+    color: var(--ash);
+    margin-bottom: var(--space-xs);
+  }
+
+  :global([data-ground='blood']) .artwork-count {
+    color: var(--rosewash);
+  }
+
+  h1 {
+    font-size: var(--step-3);
+  }
+
+  blockquote {
+    margin: var(--space-m) auto 0;
+    max-width: 32rem;
+    font-size: var(--step-1);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+
+  .artwork-nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--space-s);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-m);
+    border-top: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+    font-size: var(--step--1);
+  }
+
+  .artwork-nav a {
+    display: flex;
+    flex-direction: column;
+    padding-block: var(--space-xs);
+    text-decoration: none;
+  }
+
+  .artwork-nav a:hover span:last-child {
+    text-decoration: underline;
+  }
+
+  .artwork-nav a[rel='prev'] {
+    text-align: left;
+  }
+
+  .artwork-nav a[rel='next'] {
+    text-align: right;
+  }
+
+  .artwork-nav-label {
+    opacity: 0.75;
+  }
+
+  @media (max-width: 30rem) {
+    .artwork-nav {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .artwork-nav a:nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      text-align: center;
+    }
+  }
+</style>

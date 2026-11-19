@@ -1,0 +1,112 @@
+---
+import { Picture } from 'astro:assets';
+import ArtistLayout from '../../../layouts/ArtistLayout.astro';
+import { artworks } from '../../../sites/john-remy/artworks';
+import { href } from '../../../lib/paths';
+---
+
+<ArtistLayout
+  title="Eserler | John Remy"
+  description={`John Remy'nin eserlerinin tam listesi: ${artworks.map((a) => a.title).join(', ')}.`}
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Eserler</h1>
+      <p>{artworks.length} eser. Ayrıntısını görmek istediğiniz esere dokunun.</p>
+    </header>
+
+    <ul class="catalogue" role="list">
+      {
+        artworks.map((work) => (
+          <li>
+            <a class="catalogue-item" href={href(`john-remy/eserler/${work.slug}`)}>
+              <span class:list={['frame', `frame--${work.ground}`]}>
+                <Picture
+                  src={work.image}
+                  alt=""
+                  formats={['avif']}
+                  fallbackFormat="webp"
+                  widths={[400, 700, 1000]}
+                  sizes="(min-width: 48rem) 45vw, 100vw"
+                />
+              </span>
+              <span class="catalogue-title">{work.title}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</ArtistLayout>
+
+<style>
+  .catalogue {
+    display: grid;
+    gap: var(--space-xl) var(--space-l);
+    margin: 0 0 var(--space-2xl);
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .catalogue {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .catalogue-item {
+    display: block;
+    text-decoration: none;
+  }
+
+  /* Each work sits on its own painted ground, so frames differ in color
+     but share one proportion to keep the index calm. */
+  .frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 4 / 5;
+    padding: var(--space-l);
+    border: 1px solid var(--line);
+  }
+
+  /* The butterfly already carries its own red margin; no extra padding. */
+  .frame--blood {
+    padding: 0;
+    background: var(--blood);
+    border-color: var(--blood);
+  }
+
+  .frame--black {
+    background: var(--black);
+  }
+
+  .frame :global(picture),
+  .frame :global(img) {
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .frame :global(picture) {
+    display: contents;
+  }
+
+  .catalogue-title {
+    display: block;
+    margin-top: var(--space-s);
+    font-size: var(--step-2);
+    font-weight: 750;
+    font-stretch: 75%;
+    line-height: 1.1;
+  }
+
+  .catalogue-item:hover .catalogue-title {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+  }
+
+  .catalogue-item:hover .frame--black {
+    border-color: var(--ash);
+  }
+</style>
