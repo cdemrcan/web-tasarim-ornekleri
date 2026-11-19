@@ -9,6 +9,7 @@ const base = `http://localhost:4321/web-tasarim-ornekleri/${site}/`;
 const pages = {
   'john-remy': ['', 'eserler/', 'eserler/screaming-mug/', 'hakkinda/', 'iletisim/'],
   restoran: ['', 'menu/', 'rezervasyon/', 'iletisim/'],
+  hinoki: ['', 'menu/', 'rezervasyon/', 'iletisim/'],
 }[site] ?? [''];
 
 const shots = [

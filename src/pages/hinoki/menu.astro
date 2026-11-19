@@ -1,0 +1,322 @@
+---
+import HinokiLayout from '../../layouts/HinokiLayout.astro';
+import { href } from '../../lib/paths';
+import { tastingMenus, courses, formatPrice } from '../../sites/hinoki/menu';
+---
+
+<HinokiLayout
+  title="Menü | Hinoki"
+  description="Hinoki menüsü: tezgâh omakase, akşam menüsü ve à la carte soğuklar, sıcaklar, suşi, sashimi, tatlılar ve içecekler."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Menü</h1>
+      <p>
+        Balıklar günlük geldiği için menü mevsime göre değişir. Bu bir tasarım örneğidir: yemekler gerçek,
+        fiyatlar örnektir.
+      </p>
+    </header>
+
+    <section class="tasting" aria-labelledby="tasting-title">
+      <h2 id="tasting-title" class="section-title">Tadım menüleri</h2>
+      <div class="tasting-grid">
+        {
+          tastingMenus.map((m) => (
+            <article class="tasting-card">
+              <h3>{m.name}</h3>
+              <p class="tasting-summary">{m.summary}</p>
+              <ol class="tasting-courses">
+                {m.courses.map((c) => <li>{c}</li>)}
+              </ol>
+              <p class="tasting-price">
+                Kişi başı <strong>{formatPrice(m.price)}</strong>
+              </p>
+              <p class="tasting-note">{m.note}</p>
+            </article>
+          ))
+        }
+      </div>
+      <p class="tasting-cta">
+        <a class="button" href={href('hinoki/rezervasyon')}>Tadım menüsü için yer ayırt</a>
+      </p>
+    </section>
+
+    <section class="carte" aria-labelledby="carte-title">
+      <h2 id="carte-title" class="section-title">À la carte</h2>
+      <div class="carte-grid">
+        <nav class="carte-index" aria-label="À la carte bölümleri">
+          <ul>
+            {
+              courses.map((c) => (
+                <li>
+                  <a href={`#${c.id}`} data-index-link>
+                    {c.title}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+
+        <div class="carte-body">
+          {
+            courses.map((c) => (
+              <section class="course" id={c.id} aria-labelledby={`${c.id}-baslik`} data-course>
+                <h3 id={`${c.id}-baslik`}>{c.title}</h3>
+                {c.note && <p class="course-note">{c.note}</p>}
+                <ul class="dishes" role="list">
+                  {c.dishes.map((d) => (
+                    <li class="dish">
+                      <div class="dish-head">
+                        <p class="dish-name">
+                          {d.name}
+                          {d.romaji && <span class="dish-romaji" lang="ja-Latn">{d.romaji}</span>}
+                        </p>
+                        <p class="dish-price">
+                          {formatPrice(d.price)}
+                          {d.unit && <span class="dish-unit"> / {d.unit}</span>}
+                        </p>
+                      </div>
+                      <p class="dish-desc">{d.description}</p>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</HinokiLayout>
+
+<script>
+  // Highlight the course currently in view in the sticky index.
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-index-link]'));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('[data-course]'));
+
+  if (links.length && 'IntersectionObserver' in window) {
+    const visible = new Map<string, boolean>();
+    const update = () => {
+      const active = sections.find((s) => visible.get(s.id));
+      for (const link of links) {
+        const isActive = active !== undefined && link.hash === `#${active.id}`;
+        if (isActive) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      }
+    };
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) visible.set(e.target.id, e.isIntersecting);
+        update();
+      },
+      { rootMargin: '-20% 0px -60% 0px' },
+    );
+    sections.forEach((s) => observer.observe(s));
+  }
+</script>
+
+<style>
+  .section-title {
+    font-size: var(--step-3);
+    margin-bottom: var(--space-l);
+  }
+
+  /* ---------- Tasting menus ---------- */
+  .tasting {
+    padding-bottom: var(--space-2xl);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .tasting-grid {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  @media (min-width: 52rem) {
+    .tasting-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .tasting-card {
+    padding: var(--space-l);
+    background: var(--field);
+    border-top: 1px solid var(--hinoki);
+  }
+
+  .tasting-card h3 {
+    font-size: var(--step-2);
+  }
+
+  .tasting-summary {
+    margin-top: var(--space-xs);
+    color: var(--muted);
+  }
+
+  .tasting-courses {
+    margin: var(--space-m) 0;
+    padding-left: 1.25rem;
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .tasting-courses li::marker {
+    color: var(--hinoki-text);
+  }
+
+  .tasting-price {
+    font-size: var(--step-1);
+  }
+
+  .tasting-note {
+    margin-top: var(--space-xs);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .tasting-cta {
+    margin-top: var(--space-l);
+  }
+
+  /* ---------- À la carte ---------- */
+  .carte {
+    padding-block: var(--space-2xl);
+  }
+
+  .carte-grid {
+    display: grid;
+    gap: var(--space-l);
+  }
+
+  /* Grid items default to min-width: auto, which would let the scrollable
+     index row stretch the page instead of scrolling inside itself. */
+  .carte-grid > * {
+    min-width: 0;
+  }
+
+  .carte-index ul {
+    display: flex;
+    gap: var(--space-xs) var(--space-m);
+    margin: 0;
+    padding: 0 0 var(--space-xs);
+    list-style: none;
+    overflow-x: auto;
+  }
+
+  .carte-index a {
+    display: inline-block;
+    padding: 0.5rem 0;
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 1px solid transparent;
+  }
+
+  .carte-index a:hover {
+    color: var(--sumi);
+  }
+
+  .carte-index a[aria-current] {
+    color: var(--sumi);
+    border-bottom-color: var(--hinoki);
+  }
+
+  @media (min-width: 60rem) {
+    .carte-grid {
+      grid-template-columns: 12rem 1fr;
+      gap: var(--space-xl);
+      align-items: start;
+    }
+
+    .carte-index {
+      position: sticky;
+      top: var(--space-l);
+    }
+
+    .carte-index ul {
+      flex-direction: column;
+      overflow: visible;
+    }
+
+    .carte-index a {
+      border-bottom: 0;
+      border-left: 1px solid var(--line);
+      padding: 0.4rem 0 0.4rem var(--space-s);
+    }
+
+    .carte-index a[aria-current] {
+      border-left-color: var(--hinoki);
+      border-left-width: 2px;
+    }
+  }
+
+  .course {
+    scroll-margin-top: var(--space-l);
+  }
+
+  .course + .course {
+    margin-top: var(--space-xl);
+  }
+
+  .course h3 {
+    font-size: var(--step-2);
+    padding-bottom: var(--space-s);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .course-note {
+    margin-top: var(--space-s);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .dishes {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dish {
+    padding-block: var(--space-m);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .dish-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.25rem var(--space-m);
+  }
+
+  .dish-name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+
+  .dish-romaji {
+    margin-left: 0.6rem;
+    font-family: var(--font-body);
+    font-size: var(--step--1);
+    color: var(--hinoki-text);
+    letter-spacing: 0.04em;
+  }
+
+  .dish-price {
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .dish-unit {
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .dish-desc {
+    margin-top: 0.15rem;
+    color: var(--muted);
+    max-width: 36rem;
+  }
+</style>

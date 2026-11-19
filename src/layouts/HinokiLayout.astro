@@ -1,0 +1,135 @@
+---
+import '@fontsource/shippori-mincho/500.css';
+import '@fontsource/zen-kaku-gothic-new/400.css';
+import '@fontsource/zen-kaku-gothic-new/500.css';
+import '../sites/hinoki/site.css';
+import SeoHead from '../components/shared/SeoHead.astro';
+import ConceptNotice from '../components/shared/ConceptNotice.astro';
+import { href } from '../lib/paths';
+import { authorLink, unsplashLink } from '../lib/unsplash';
+import { business } from '../sites/hinoki/business';
+import { photoList } from '../sites/hinoki/photos';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Float the header over a full-bleed hero photo (home page). */
+  overlayHeader?: boolean;
+}
+
+const { title, description, overlayHeader = false } = Astro.props;
+
+const current = Astro.url.pathname;
+const links = [
+  { label: 'Menü', path: 'hinoki/menu' },
+  { label: 'İletişim', path: 'hinoki/iletisim' },
+];
+const reservationUrl = href('hinoki/rezervasyon');
+const authors = [...new Map(photoList.map((p) => [p.username, p])).values()];
+---
+
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1c1a18" />
+    <link rel="icon" href={href('favicon-hinoki.svg')} type="image/svg+xml" />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <SeoHead title={title} description={description} image="og/hinoki.jpg" imageAlt="Hinoki: ahşap çıtalı, loş ışıklı restoran salonu" />
+  </head>
+  <body>
+    <a class="skip-link" href="#icerik">İçeriğe geç</a>
+    <ConceptNotice business={business.name} />
+    <div class="header-host">
+      <header class:list={['site-header', { 'site-header--overlay': overlayHeader }]}>
+        <div class="wrap">
+          <a class="logo" href={href('hinoki')}>
+            <span class="seal" aria-hidden="true">檜</span>
+            <span class="logo-name">Hinoki</span>
+          </a>
+          <nav class="site-nav" aria-label="Ana menü">
+            <ul>
+              {
+                links.map((l) => {
+                  const url = href(l.path);
+                  return (
+                    <li>
+                      <a href={url} aria-current={current === url ? 'page' : undefined}>
+                        {l.label}
+                      </a>
+                    </li>
+                  );
+                })
+              }
+              <li>
+                <a class="button" href={reservationUrl} aria-current={current === reservationUrl ? 'page' : undefined}>
+                  Rezervasyon
+                </a>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+
+      <main id="icerik" tabindex="-1">
+        <slot />
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <h2>Hinoki</h2>
+          <p>{business.address} <span class="sample">örnek</span></p>
+          <p>Telefon: {business.phone} <span class="sample">örnek</span></p>
+        </div>
+        <div>
+          <h2>Çalışma saatleri</h2>
+          <dl>
+            {
+              business.hours.map((h) => (
+                <>
+                  <dt>{h.days}</dt>
+                  <dd>{h.time}</dd>
+                </>
+              ))
+            }
+          </dl>
+        </div>
+        <div>
+          <h2>Sayfalar</h2>
+          <ul>
+            <li><a href={href('hinoki/menu')}>Menü</a></li>
+            <li><a href={reservationUrl}>Rezervasyon</a></li>
+            <li><a href={href('hinoki/iletisim')}>İletişim ve ulaşım</a></li>
+            <li><a href={href('hinoki/kvkk')}>Kişisel verilerin korunması</a></li>
+          </ul>
+        </div>
+        <p class="footer-credits">
+          Fotoğraflar:
+          {
+            authors.map((p, i) => (
+              <>
+                <a href={authorLink(p)} rel="noopener">{p.author}</a>
+                {i < authors.length - 1 ? ', ' : ''}
+              </>
+            ))
+          }
+          {' / '}
+          <a href={unsplashLink} rel="noopener">Unsplash</a>. Fotoğraflar temsilidir; işletmeye ait değildir.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  /* Lets the overlay header sit on top of the hero inside the same stacking context. */
+  .header-host {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+</style>

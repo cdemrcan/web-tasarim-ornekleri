@@ -6,6 +6,7 @@ Portfolio sample websites by John Remy, built as one static Astro project and pu
 |---|---|---|
 | John Remy, artist portfolio | `/john-remy/` | MVP done, awaiting content (see below) |
 | Közde Ocakbaşı, restaurant (fictional business) | `/restoran/` | Concept done |
+| Hinoki, modern Japanese restaurant (fictional business) | `/hinoki/` | Concept done |
 | Five more concept sites | (planned) | See `PROJECT_BRIEF.md` |
 
 Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](DESIGN_DIRECTION.md), [IMPLEMENTATION_PLAN.md](IMPLEMENTATION_PLAN.md).
@@ -14,12 +15,12 @@ Planning documents: [PROJECT_BRIEF.md](PROJECT_BRIEF.md), [DESIGN_DIRECTION.md](
 
 - [Astro](https://astro.build) 7, static output, TypeScript strict
 - Plain CSS with per-site custom-property tokens
-- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree
+- Self-hosted fonts via Fontsource (all OFL): Bricolage Grotesque; Young Serif + Figtree; Shippori Mincho + Zen Kaku Gothic New
 - Own images optimized at build time by Astro (AVIF with a WebP fallback, responsive `srcset`)
 - Stock photos hotlinked from Unsplash with responsive imgix parameters, as Unsplash's API guidelines require
 - QA: Playwright + axe-core
 
-No backend, no environment variables, no third-party scripts. The only third-party requests are Unsplash images on the concept sites.
+No backend, no environment variables, no third-party scripts. The only third-party requests are Unsplash images on the concept sites and an OpenStreetMap embed on the Hinoki contact page.
 
 ## Commands
 
@@ -40,6 +41,7 @@ The first QA run needs a browser: `pnpm exec playwright install chromium`.
 Live:
 - https://cdemrcan.github.io/web-tasarim-ornekleri/john-remy/
 - https://cdemrcan.github.io/web-tasarim-ornekleri/restoran/
+- https://cdemrcan.github.io/web-tasarim-ornekleri/hinoki/
 
 GitHub Pages serves the `gh-pages` branch, which holds only the built `dist/` output plus a `.nojekyll` file (without it, Pages would hide the `_astro/` asset folder). To publish an update:
 
@@ -97,3 +99,15 @@ A fictional ocakbaşı in Moda, Kadıköy. Every page carries a notice that the 
 - The reservation form validates the date (today up to 60 days ahead), the time, party size, a table-area radio group, a Turkish phone number and consent. Like the other forms, it states plainly that no booking was made.
 
 **Content:** dish names are real ocakbaşı fare; prices (TL) are samples. The address has no real number, the phone is all zeros, and the email uses the reserved `.example` domain. None are linked. Photos are Unsplash stock, credited in the footer and marked as representative.
+
+## Hinoki (concept modern-Japanese restaurant)
+
+A fictional omakase counter and restaurant on the Arnavutköy waterfront. Like Közde, every page flags the business as fictional.
+
+**Reference:** inspired by the principles of a client-supplied luxury restaurant site: immersive full-bleed photography, restrained navigation, alternating image and text rows, a first-visit ordering guide. No branding, colors, copy or assets were reused. The reference's press carousel was left out, since a fictional restaurant has no press.
+
+**Pages:** home, menu (tasting menus plus à la carte with a sticky, scroll-tracking course index), reservation, contact (OpenStreetMap of the neighbourhood, desaturated), privacy notice (sample).
+
+**Design:** warm sumi-ink black on white, hinoki-wood hairlines, vermilion only in the hanko-seal logo (檜). Shippori Mincho headings and Zen Kaku Gothic New body text, both Japanese families with Turkish character support.
+
+**Reservation:** seating area (counter / salon / terrace), date up to 30 days ahead, time in 15-minute steps, party size up to 8, phone and consent. Honest demo result, as on the other sites.

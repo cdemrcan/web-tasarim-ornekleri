@@ -1,0 +1,162 @@
+---
+import HinokiLayout from '../../layouts/HinokiLayout.astro';
+import { href } from '../../lib/paths';
+import { business } from '../../sites/hinoki/business';
+---
+
+<HinokiLayout
+  title="İletişim ve ulaşım | Hinoki"
+  description="Hinoki'nin adresi, çalışma saatleri, Arnavutköy'e ulaşım ve özel davet talepleri."
+>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>İletişim ve ulaşım</h1>
+      <p>Arnavutköy sahilindeyiz. Haritada gösterilen yer semttir; örnek işletmenin gerçek bir adresi yoktur.</p>
+    </header>
+
+    <div class="contact">
+      <div class="map">
+        <iframe
+          src={business.map.embed}
+          title="Arnavutköy sahilini gösteren OpenStreetMap haritası"
+          loading="lazy"
+          referrerpolicy="no-referrer"></iframe>
+        <a class="map-link" href={business.map.link} rel="noopener" target="_blank">
+          Haritayı büyük aç<span class="visually-hidden"> (yeni sekmede açılır)</span>
+        </a>
+      </div>
+
+      <div class="details">
+        <section aria-labelledby="address-title">
+          <span class="rule" aria-hidden="true"></span>
+          <h2 id="address-title">Adres</h2>
+          <p>{business.address} <span class="sample">örnek</span></p>
+          <p class="hint">Bebek'ten sahil yolu boyunca yürüyerek yaklaşık beş dakika. Vale hizmeti akşam 18.00'den itibaren.</p>
+        </section>
+
+        <section aria-labelledby="contact-title">
+          <span class="rule" aria-hidden="true"></span>
+          <h2 id="contact-title">İletişim</h2>
+          <dl>
+            <div>
+              <dt class="label">Rezervasyon</dt>
+              <dd>{business.phone} <span class="sample">örnek</span></dd>
+            </div>
+            <div>
+              <dt class="label">E-posta</dt>
+              <dd>{business.email} <span class="sample">örnek</span></dd>
+            </div>
+            <div>
+              <dt class="label">Özel davetler</dt>
+              <dd>{business.eventsEmail} <span class="sample">örnek</span></dd>
+            </div>
+          </dl>
+          <p class="hint">
+            Örnek iletişim bilgileri kimseye ulaşmaz. Masa ayırtmak için <a href={href('hinoki/rezervasyon')}>rezervasyon formunu</a> kullanın.
+          </p>
+        </section>
+
+        <section aria-labelledby="hours-title">
+          <span class="rule" aria-hidden="true"></span>
+          <h2 id="hours-title">Saatler</h2>
+          <table>
+            <caption class="visually-hidden">Günlere göre açılış ve kapanış saatleri</caption>
+            <tbody>
+              {
+                business.hours.map((h) => (
+                  <tr>
+                    <th scope="row">{h.days}</th>
+                    <td>{h.time}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+</HinokiLayout>
+
+<style>
+  .contact {
+    display: grid;
+    gap: var(--space-xl);
+    padding-bottom: var(--space-2xl);
+  }
+
+  @media (min-width: 60rem) {
+    .contact {
+      grid-template-columns: 1.2fr 1fr;
+      align-items: start;
+    }
+
+    .map {
+      position: sticky;
+      top: var(--space-l);
+    }
+  }
+
+  .map iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--line);
+    /* Desaturate the map so it sits quietly next to the warm palette. */
+    filter: grayscale(0.85) contrast(1.05);
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: var(--space-xs);
+    padding-block: 0.4rem;
+    font-size: var(--step--1);
+  }
+
+  .details {
+    display: grid;
+    gap: var(--space-xl);
+  }
+
+  .details h2 {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-s);
+  }
+
+  .details dl {
+    display: grid;
+    gap: var(--space-s);
+    margin: 0;
+  }
+
+  .details dd {
+    margin: 0.15rem 0 0;
+    overflow-wrap: anywhere;
+  }
+
+  .hint {
+    margin-top: var(--space-s);
+    font-size: var(--step--1);
+    color: var(--muted);
+    max-width: var(--measure);
+  }
+
+  table {
+    width: 100%;
+    max-width: 28rem;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-weight: 400;
+  }
+
+  td {
+    text-align: right;
+    white-space: nowrap;
+  }
+</style>

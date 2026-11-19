@@ -18,6 +18,11 @@ const pages = [
   'restoran/rezervasyon/',
   'restoran/iletisim/',
   'restoran/kvkk/',
+  'hinoki/',
+  'hinoki/menu/',
+  'hinoki/rezervasyon/',
+  'hinoki/iletisim/',
+  'hinoki/kvkk/',
 ];
 
 const viewports = [
@@ -237,5 +242,44 @@ test.describe('restaurant reservation form', () => {
     await expect(result).toContainText('4 kişi');
     await expect(result).toContainText('Ocakbaşı (mangalın çevresi)');
     await expect(result).toContainText('20.00');
+  });
+});
+
+test.describe('hinoki', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('menu index marks the course in view', async ({ page }) => {
+    await open(page, 'hinoki/menu/');
+    await page.locator('#tatlilar').scrollIntoViewIfNeeded();
+    await page.evaluate(() => document.querySelector('#tatlilar')!.scrollIntoView({ block: 'start' }));
+    await expect(page.locator('a[href="#tatlilar"]')).toHaveAttribute('aria-current', 'location');
+  });
+
+  test('reservation validates and never claims a booking', async ({ page }) => {
+    await open(page, 'hinoki/rezervasyon/');
+    const submit = page.getByRole('button', { name: 'Rezervasyon talebini kontrol et' });
+    await submit.click();
+    await expect(page.locator('[data-error-summary]')).toBeFocused();
+    await expect(page.locator('[data-error-summary] li')).toHaveCount(7);
+
+    // More than 30 days ahead is rejected.
+    const far = new Date(Date.now() + 40 * 86_400_000);
+    const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    await page.fill('#tarih', iso(far));
+    await submit.click();
+    await expect(page.locator('#tarih-hata')).toContainText('30 gün');
+
+    await page.getByText('Suşi tezgâhı').click();
+    await page.fill('#tarih', iso(new Date(Date.now() + 5 * 86_400_000)));
+    await page.selectOption('#saat', '19.00');
+    await page.selectOption('#kisi', '2');
+    await page.fill('#ad', 'Deneme Kişi');
+    await page.fill('#telefon', '+90 532 000 00 00');
+    await page.check('#onay');
+    await submit.click();
+    const result = page.locator('#form-result');
+    await expect(result).toBeFocused();
+    await expect(result.getByRole('heading')).toHaveText('Rezervasyon oluşturulmadı');
+    await expect(result).toContainText('Suşi tezgâhı');
   });
 });

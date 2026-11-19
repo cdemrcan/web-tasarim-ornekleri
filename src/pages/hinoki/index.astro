@@ -1,0 +1,363 @@
+---
+import HinokiLayout from '../../layouts/HinokiLayout.astro';
+import UnsplashImage from '../../components/shared/UnsplashImage.astro';
+import { href } from '../../lib/paths';
+import { photos } from '../../sites/hinoki/photos';
+import { business } from '../../sites/hinoki/business';
+
+const steps = [
+  { title: 'Soğuklarla başlayın', text: 'Masa için iki soğuk tabak seçin: usuzukuri ya da tataki gibi hafif, ince dilimlenmiş balıklar.' },
+  { title: 'Sıcaklara geçin', text: 'Ardından iki sıcak tabak: robata ızgaradan bir şiş ve misoda bekletilmiş morina iyi bir ikilidir.' },
+  { title: 'Suşiyle devam edin', text: 'Kişi başı dört ila altı parça nigiri. Ne seçeceğinizi bilmiyorsanız tezgâha sorun.' },
+  { title: 'Hafif bir kapanış', text: 'Matcha krem brüle ya da mochi, yanında bir demlik genmaicha.' },
+];
+---
+
+<HinokiLayout
+  title="Hinoki | Arnavutköy'de omakase ve suşi tezgâhı"
+  description="Arnavutköy'de, Boğaz'a bakan bir suşi tezgâhı ve modern Japon mutfağı. Omakase menüsü, salon ve teras. Çevrimiçi masa ayırtın."
+  overlayHeader
+>
+  <section class="hero" aria-labelledby="hero-title">
+    <UnsplashImage photo={photos.salon} sizes="100vw" widths={[800, 1200, 1600, 2000, 2600]} eager class="hero-img" />
+    <div class="hero-shade" aria-hidden="true"></div>
+    <div class="wrap hero-content">
+      <p class="hero-place">{business.district}, Boğaziçi</p>
+      <h1 id="hero-title">Hinoki</h1>
+      <p class="hero-lead">Boğaz'a bakan bir suşi tezgâhı. Balık her sabah gelir, menüyü tezgâhtaki şef kurar.</p>
+      <p class="hero-actions">
+        <a class="button button--light" href={href('hinoki/rezervasyon')}>Masa ayırt</a>
+        <a class="button button--ghost-light" href={href('hinoki/menu')}>Menüyü incele</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="facts" aria-label="Kısa bilgiler">
+    <dl class="wrap">
+      <div>
+        <dt class="label">Saatler</dt>
+        <dd>Salı – Pazar akşamları, pazartesi kapalı</dd>
+      </div>
+      <div>
+        <dt class="label">Yer</dt>
+        <dd>Arnavutköy sahili, Bebek'e beş dakika</dd>
+      </div>
+      <div>
+        <dt class="label">Omakase</dt>
+        <dd>Tezgâhta, 19.00 ve 21.15 oturumları</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="row" aria-labelledby="counter-title">
+    <div class="wrap row-grid">
+      <figure class="row-media row-media--wide">
+        <UnsplashImage photo={photos.tezgah} aspect={16 / 10} sizes="(min-width: 60rem) 58vw, 100vw" widths={[600, 900, 1300, 1800]} />
+      </figure>
+      <div class="row-text">
+        <span class="rule" aria-hidden="true"></span>
+        <p class="label">Suşi tezgâhı</p>
+        <h2 id="counter-title">On iki kişilik bir tezgâh</h2>
+        <p>
+          Hinoki ağacından tezgâhta şef her parçayı önünüzde hazırlar ve elden verir. Omakase'de menüyü o günün
+          balığı belirler; size yalnızca sevmediklerinizi söylemek kalır.
+        </p>
+        <a class="button button--outline" href={href('hinoki/rezervasyon')}>Tezgâhta yer ayırt</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="row row--field" aria-labelledby="terrace-title">
+    <div class="wrap row-grid row-grid--reverse">
+      <figure class="row-media">
+        <UnsplashImage photo={photos.bogaz} aspect={4 / 3} sizes="(min-width: 60rem) 50vw, 100vw" widths={[600, 900, 1300, 1800]} />
+      </figure>
+      <div class="row-text">
+        <span class="rule" aria-hidden="true"></span>
+        <p class="label">Teras</p>
+        <h2 id="terrace-title">Akşamüstü, Boğaz'a karşı</h2>
+        <p>
+          Nisandan ekime kadar teras açıktır. Gün batımına denk gelen masalar erken dolar; rezervasyon yaparken
+          teras tercihinizi belirtin.
+        </p>
+        <a class="button button--outline" href={href('hinoki/menu')}>Akşam menüsüne bak</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" aria-labelledby="band-title">
+    <UnsplashImage photo={photos.nigiri} aspect={4 / 3} sizes="(min-width: 48rem) 62vw, 100vw" widths={[600, 900, 1300, 1800]} class="band-img" />
+    <div class="band-shade" aria-hidden="true"></div>
+    <div class="wrap band-content">
+      <h2 id="band-title">İlk kez geliyorsanız</h2>
+      <p>Paylaşarak yemek için iyi bir sıra.</p>
+    </div>
+  </section>
+
+  <section class="steps" aria-label="İlk ziyaret için önerilen sıra">
+    <ol class="wrap steps-list">
+      {
+        steps.map((step) => (
+          <li>
+            <h3>{step.title}</h3>
+            <p>{step.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+
+  <section class="row row--field" aria-labelledby="events-title">
+    <div class="wrap row-grid row-grid--narrow-media">
+      <figure class="row-media">
+        <UnsplashImage photo={photos.maguro} aspect={4 / 5} sizes="(min-width: 60rem) 32vw, 100vw" widths={[480, 800, 1100]} />
+      </figure>
+      <div class="row-text">
+        <span class="rule" aria-hidden="true"></span>
+        <p class="label">Özel davetler</p>
+        <h2 id="events-title">Tezgâhı ya da salonu bütünüyle ayırın</h2>
+        <p>
+          On iki kişiye kadar tezgâh, kırk kişiye kadar salon özel davetlere kapatılabilir. Menüyü şefle birlikte
+          kurarsınız; içecek eşleştirmesi isteğe bağlıdır.
+        </p>
+        <a class="button button--outline" href={href('hinoki/iletisim')}>Davet için iletişime geçin</a>
+      </div>
+    </div>
+  </section>
+</HinokiLayout>
+
+<style>
+  /* ---------- Hero ---------- */
+  .hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: max(34rem, 100svh);
+    color: var(--white);
+    overflow: hidden;
+  }
+
+  .hero :global(.hero-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .hero-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.25) 45%, rgb(0 0 0 / 0.1) 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    padding-block: var(--space-2xl) var(--space-xl);
+  }
+
+  .hero-place {
+    letter-spacing: 0.1em;
+    font-size: var(--step--1);
+    margin-bottom: var(--space-s);
+  }
+
+  .hero h1 {
+    color: var(--white);
+    font-size: clamp(4rem, 2.5rem + 9vw, 10rem);
+    line-height: 1;
+    letter-spacing: 0.04em;
+  }
+
+  .hero-lead {
+    margin-top: var(--space-m);
+    max-width: 30rem;
+    font-size: var(--step-1);
+    line-height: 1.6;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-s);
+    margin-top: var(--space-l);
+  }
+
+  /* ---------- Facts ---------- */
+  .facts {
+    border-bottom: 1px solid var(--line);
+  }
+
+  .facts dl {
+    display: grid;
+    gap: var(--space-m) var(--space-l);
+    margin: 0 auto;
+    padding-block: var(--space-l);
+  }
+
+  @media (min-width: 48rem) {
+    .facts dl {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .facts dd {
+    margin: 0.25rem 0 0;
+  }
+
+  /* ---------- Alternating rows ---------- */
+  .row {
+    padding-block: var(--space-2xl);
+  }
+
+  .row--field {
+    background: var(--field);
+  }
+
+  .row-grid {
+    display: grid;
+    gap: var(--space-l);
+    align-items: center;
+  }
+
+  @media (min-width: 60rem) {
+    .row-grid {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--space-xl);
+    }
+
+    .row-grid--reverse {
+      grid-template-columns: 5fr 6fr;
+    }
+
+    .row-grid--reverse .row-media {
+      order: 2;
+    }
+
+    .row-grid--narrow-media {
+      grid-template-columns: 4fr 6fr;
+    }
+  }
+
+  .row-media {
+    margin: 0;
+  }
+
+  .row-media :global(img) {
+    width: 100%;
+  }
+
+  .row-text h2 {
+    margin: var(--space-xs) 0 var(--space-m);
+    font-size: var(--step-3);
+  }
+
+  .row-text p:not(.label) {
+    max-width: var(--measure);
+    color: var(--muted);
+    margin-bottom: var(--space-l);
+  }
+
+  /* ---------- Photo band ---------- */
+  .band {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: clamp(18rem, 36vw, 30rem);
+    color: var(--white);
+    overflow: hidden;
+    background: #000;
+  }
+
+  .band :global(.band-img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 60% 55%;
+  }
+
+  /* The photo's ground is pure black like the band, so on wider screens it
+     occupies only the right side and fades in; the heading sits on solid black. */
+  @media (min-width: 48rem) {
+    .band :global(.band-img) {
+      left: auto;
+      width: 62%;
+      object-position: 50% 55%;
+      -webkit-mask-image: linear-gradient(to right, transparent, #000 35%);
+      mask-image: linear-gradient(to right, transparent, #000 35%);
+    }
+
+    .band-shade {
+      display: none;
+    }
+  }
+
+  .band-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgb(0 0 0 / 0.75), rgb(0 0 0 / 0) 70%);
+  }
+
+  .band-content {
+    position: relative;
+  }
+
+  /* Two short lines keep the heading on the dark left side, clear of the nigiri. */
+  .band h2 {
+    max-width: 8ch;
+    color: var(--white);
+    font-size: var(--step-4);
+    line-height: 1.1;
+  }
+
+  .band p {
+    margin-top: var(--space-s);
+    font-size: var(--step-1);
+  }
+
+  /* ---------- Ordering guide: a real sequence, so it is numbered ---------- */
+  .steps {
+    padding-block: var(--space-xl) var(--space-2xl);
+  }
+
+  .steps-list {
+    display: grid;
+    gap: var(--space-l);
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+    counter-reset: step;
+  }
+
+  @media (min-width: 52rem) {
+    .steps-list {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .steps-list li {
+    counter-increment: step;
+    padding-top: var(--space-m);
+    border-top: 1px solid var(--hinoki);
+  }
+
+  .steps-list li::before {
+    content: counter(step);
+    display: block;
+    margin-bottom: var(--space-xs);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--hinoki-text);
+  }
+
+  .steps-list h3 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-xs);
+  }
+
+  .steps-list p {
+    color: var(--muted);
+  }
+</style>
