@@ -344,3 +344,46 @@ test.describe('dental clinic', () => {
     expect(await visibleSlots.count()).toBeGreaterThan(0);
   });
 });
+
+for (const formPage of ['restoran/rezervasyon/', 'hinoki/rezervasyon/', 'dis-klinigi/randevu/']) {
+  test(`phone field accepts only a real number: ${formPage}`, async ({ page }) => {
+    await open(page, formPage);
+    const phone = page.locator('#telefon');
+
+    // Letters typed after the number never appear (the reported bug).
+    await phone.pressSequentially('05345566545bn');
+    await expect(phone).toHaveValue('05345566545');
+
+    // Extra digits beyond a full number are not accepted.
+    await phone.fill('');
+    await phone.pressSequentially('0534556654512345');
+    await expect(phone).toHaveValue('05345566545');
+
+    // With the country code a number has 12 digits; spaces and + are kept.
+    await phone.fill('');
+    await phone.pressSequentially('+90 532 000 00 00 99');
+    await expect(phone).toHaveValue('+90 532 000 00 00');
+
+    // Pasted text is cleaned too.
+    await phone.fill('');
+    await phone.focus();
+    await page.evaluate(() => {
+      const el = document.querySelector<HTMLInputElement>('#telefon')!;
+      el.value = 'tel: 0532-000-00-00 (ev)';
+      el.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    await expect(phone).toHaveValue(' 0532-000-00-00 ()');
+
+    // A value that bypasses typing (e.g. autofill) is still rejected on submit.
+    await page.evaluate(() => {
+      document.querySelector<HTMLInputElement>('#telefon')!.value = '0534abc0000';
+    });
+    await page.getByRole('button', { name: /talebini kontrol et/ }).click();
+    await expect(page.locator('#telefon-hata')).toContainText('yalnızca rakam');
+
+    // Too short is rejected with the format hint.
+    await phone.fill('0532 000');
+    await page.getByRole('button', { name: /talebini kontrol et/ }).click();
+    await expect(page.locator('#telefon-hata')).toContainText('05XX XXX XX XX');
+  });
+}

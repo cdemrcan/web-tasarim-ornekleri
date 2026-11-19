@@ -61,12 +61,42 @@ function formatDate(iso: string): string {
   return y && m && d ? `${d}.${m}.${y}` : iso;
 }
 
+/** Anything other than digits, spaces, +, parentheses and hyphens ("+90 (532) 000-00-00"). */
+const PHONE_INVALID_CHAR = /[^\d\s()+-]/;
+const PHONE_INVALID_CHARS = /[^\d\s()+-]/g;
+
+/** Most digits a Turkish number can have: 12 with the 90 country code, otherwise 11. */
+function maxPhoneDigits(digits: string): number {
+  return digits.startsWith('90') ? 12 : 11;
+}
+
 function validPhone(value: string): boolean {
+  // Letters or symbols anywhere make it invalid; they are never silently dropped.
+  if (PHONE_INVALID_CHAR.test(value)) return false;
   const digits = value.replace(/\D/g, '');
   if (digits.length === 10) return /^[2-5]/.test(digits);
-  if (digits.length === 11) return digits.startsWith('0');
-  if (digits.length === 12) return digits.startsWith('90');
+  if (digits.length === 11) return /^0[2-5]/.test(digits);
+  if (digits.length === 12) return /^90[2-5]/.test(digits);
   return false;
+}
+
+/**
+ * Keeps a phone field to allowed characters and a real number's digit count
+ * while the visitor types or pastes. Returns the cleaned value.
+ */
+export function sanitizePhone(value: string): string {
+  const cleaned = value.replace(PHONE_INVALID_CHARS, '');
+  const limit = maxPhoneDigits(cleaned.replace(/\D/g, ''));
+  let seen = 0;
+  let out = '';
+  for (const ch of cleaned) {
+    if (/\d/.test(ch)) {
+      if (seen >= limit) continue;
+      seen += 1;
+    }
+    out += ch;
+  }
+  return out;
 }
 
 function messageFor(control: Control): string | null {
@@ -99,8 +129,11 @@ function messageFor(control: Control): string | null {
     if (first.type === 'email' && !EMAIL_PATTERN.test(value)) {
       return 'Geçerli bir e-posta adresi girin (örneğin ad@alanadi.com).';
     }
-    if (first.type === 'tel' && !validPhone(value)) {
-      return 'Telefon numarasını 05XX XXX XX XX biçiminde girin.';
+    if (first.type === 'tel') {
+      if (PHONE_INVALID_CHAR.test(value)) {
+        return 'Telefon numarası yalnızca rakam içerebilir (boşluk, + ve parantez kullanılabilir).';
+      }
+      if (!validPhone(value)) return 'Telefon numarasını 05XX XXX XX XX biçiminde girin.';
     }
     if (first.type === 'date') {
       const minDays = first.dataset.minDays;
@@ -221,6 +254,18 @@ export function enhanceForm(
   const controls = collectControls(form);
 
   form.noValidate = true;
+
+  // Phone fields: drop letters and extra digits as they are typed or pasted.
+  for (const input of form.querySelectorAll<HTMLInputElement>('input[type="tel"]')) {
+    input.addEventListener('input', () => {
+      const cleaned = sanitizePhone(input.value);
+      if (cleaned !== input.value) {
+        const caret = (input.selectionStart ?? cleaned.length) - (input.value.length - cleaned.length);
+        input.value = cleaned;
+        input.setSelectionRange(Math.max(0, caret), Math.max(0, caret));
+      }
+    });
+  }
 
   // Keep native date pickers inside the allowed window.
   for (const input of form.querySelectorAll<HTMLInputElement>('input[type="date"]')) {
